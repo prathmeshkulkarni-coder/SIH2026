@@ -1,0 +1,4 @@
+case_id,case_name,case_type,status,created_at
+CASE-001,State v. Arun Kumar,Criminal Investigation,Under Investigation,2026-08-10 09:00:00
+CASE-002,Union of India v. Cyber Crime Syndicate,Cyber Fraud & Money Laundering,Under Trial,2026-08-12 11:30:00
+CASE-003,State v. Rajesh Gupta & Ors.,Financial Fraud & Forgery,Charge Sheet Filed,2026-08-15 14:20:00

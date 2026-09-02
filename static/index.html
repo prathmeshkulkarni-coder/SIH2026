@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NCRB SECURE DMS — National Digital Document Management System</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+
+  <!-- Fullscreen Login Screen -->
+  <div id="login-screen-overlay" class="login-screen-overlay" style="display: flex;">
+    <div class="login-card">
+      <div class="login-header">
+        <div class="ncrb-emblem" style="width:54px; height:54px; font-size:24px;">MHA</div>
+        <div style="font-size:20px; font-weight:800; color:white; margin-top:6px;">NCRB SECURE DMS AUTHENTICATION</div>
+        <div style="font-size:12px; color:#94a3b8;">Ministry of Home Affairs &bull; National Crime Records Bureau (SIH26190)</div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:12px; margin-top:8px;">
+        <div>
+          <label style="font-size:11px; color:#94a3b8; font-weight:700;">OFFICER USERNAME</label>
+          <input type="text" id="login-username" class="select-custom" placeholder="e.g. vikram or drsen" value="vikram" style="width:100%; padding:12px;">
+        </div>
+
+        <div>
+          <label style="font-size:11px; color:#94a3b8; font-weight:700;">PASSWORD</label>
+          <input type="password" id="login-password" class="select-custom" placeholder="Password" value="password123" style="width:100%; padding:12px;">
+        </div>
+
+        <button id="btn-submit-login" class="btn-primary" style="justify-content:center; padding:12px; font-size:14px; margin-top:6px;">
+          <span>🔒</span> Authenticate & Access DMS System
+        </button>
+      </div>
+
+      <div style="border-top: 1px solid rgba(255,255,255,0.08); padding-top: 16px; margin-top: 6px;">
+        <div style="font-size: 11px; color: #94a3b8; font-weight: 700; text-transform: uppercase; margin-bottom: 10px;">Quick Demo Account Selector:</div>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <div class="demo-account-chip" onclick="window.CustodyApp.quickFillLogin('vikram', 'password123')">
+            <div>
+              <strong style="color:white;">👮 Insp. Vikram Sharma</strong>
+              <div style="font-size:10px; color:#94a3b8;">Role: Investigator (OFF-001)</div>
+            </div>
+            <span style="font-family:monospace; color:#38bdf8; font-size:11px;">vikram</span>
+          </div>
+
+          <div class="demo-account-chip" onclick="window.CustodyApp.quickFillLogin('drsen', 'password123')">
+            <div>
+              <strong style="color:#fbbf24;">🛡️ SP Dr. Ananya Sen</strong>
+              <div style="font-size:10px; color:#94a3b8;">Role: Supervisor (SUP-001)</div>
+            </div>
+            <span style="font-family:monospace; color:#fbbf24; font-size:11px;">drsen</span>
+          </div>
+
+          <div class="demo-account-chip" onclick="window.CustodyApp.quickFillLogin('malviya', 'password123')">
+            <div>
+              <strong style="color:#06b6d4;">🔬 Dr. Malviya</strong>
+              <div style="font-size:10px; color:#94a3b8;">Role: Forensic Analyst (LAB-001)</div>
+            </div>
+            <span style="font-family:monospace; color:#06b6d4; font-size:11px;">malviya</span>
+          </div>
+
+          <div class="demo-account-chip" onclick="window.CustodyApp.quickFillLogin('magistrate', 'password123')">
+            <div>
+              <strong style="color:#10b981;">🏛️ Hon. Magistrate Verma</strong>
+              <div style="font-size:10px; color:#94a3b8;">Role: Court Officer (CRT-001)</div>
+            </div>
+            <span style="font-family:monospace; color:#10b981; font-size:11px;">magistrate</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Top Header Navigation -->
+  <header class="top-header">
+    <div class="brand-container">
+      <div class="ncrb-emblem">MHA</div>
+      <div>
+        <div class="brand-title">NCRB SECURE DOCUMENT MANAGEMENT SYSTEM</div>
+        <div class="brand-subtitle">Ministry of Home Affairs &bull; National Crime Records Bureau (SIH26190)</div>
+      </div>
+    </div>
+    
+    <div class="top-actions">
+      <div id="top-status-banner" class="badge-pill verified">✓ ALL DOCUMENTS VERIFIED & SECURE</div>
+      
+      <!-- Active User Profile Box -->
+      <div id="user-profile-badge" style="display:flex; align-items:center; gap:10px; background:rgba(30,41,59,0.7); border:1px solid rgba(255,255,255,0.1); padding:6px 14px; border-radius:10px;">
+        <div>
+          <div id="u-display-name" style="font-size:13px; font-weight:800; color:white;">Insp. Vikram Sharma</div>
+          <div id="u-display-role" style="font-size:10px; color:#38bdf8; font-weight:700; text-transform:uppercase;">Investigator &bull; IND-NCRB-8821</div>
+        </div>
+        <button id="btn-logout" class="btn-secondary" style="padding:4px 8px; font-size:11px; margin-left:6px;">
+          <span>🚪</span> Logout
+        </button>
+      </div>
+
+      <button id="btn-open-upload" class="btn-primary">
+        <span>📤</span> Digitize / Upload PDF File
+      </button>
+    </div>
+  </header>
+
+  <!-- Sub-Header Navigation Tabs -->
+  <nav class="sub-nav">
+    <button class="nav-tab-btn active" data-view="view-repo">
+      <span>📂</span> Central Document Repository
+    </button>
+    <button class="nav-tab-btn" data-view="view-graph">
+      <span>🕸️</span> Provenance Lineage Graph
+    </button>
+    <button class="nav-tab-btn" data-view="view-blockchain">
+      <span>🔗</span> Blockchain Ledger
+    </button>
+    <button class="nav-tab-btn" data-view="view-assets">
+      <span>📦</span> Police Asset Register
+    </button>
+
+    <!-- STRICT SUPERVISOR QUEUE TAB (Visible ONLY to Supervisor) -->
+    <button id="tab-btn-queue" class="nav-tab-btn" data-view="view-queue" style="display:none;">
+      <span>🛡️</span> Supervisor Queue <span id="pending-count-badge" style="background:#f59e0b; color:black; font-size:10px; font-weight:800; padding:2px 6px; border-radius:9999px; margin-left:4px; display:none;">0</span>
+    </button>
+
+    <button class="nav-tab-btn" data-view="view-audit">
+      <span>📜</span> Audit Ledger
+    </button>
+
+    <div style="margin-left: auto; display: flex; align-items: center; gap: 10px;">
+      <span style="font-size: 11px; color: #94a3b8; font-weight: 700;">CASE:</span>
+      <select id="case-select" class="select-custom" style="width: 280px;">
+        <option value="CASE-001">CASE-001 — State v. Arun Kumar</option>
+        <option value="CASE-002">CASE-002 — Union of India v. Cyber Crime</option>
+        <option value="CASE-003">CASE-003 — State v. Rajesh Gupta</option>
+      </select>
+    </div>
+  </nav>
+
+  <!-- Main View Area -->
+  <main class="main-content">
+    
+    <!-- Top System Metrics Bar -->
+    <div class="metrics-row">
+      <div class="metric-card">
+        <span class="metric-label">Central Repository</span>
+        <span id="m-total-docs" class="metric-value">0</span>
+      </div>
+      <div class="metric-card">
+        <span class="metric-label">Provenance Edges</span>
+        <span id="m-links" class="metric-value">0</span>
+      </div>
+      <div class="metric-card verified">
+        <span class="metric-label">Verified Intact</span>
+        <span id="m-verified" class="metric-value">0</span>
+      </div>
+      <div class="metric-card warning">
+        <span class="metric-label">Review Required</span>
+        <span id="m-warning" class="metric-value">0</span>
+      </div>
+      <div class="metric-card critical">
+        <span class="metric-label">Integrity Issues</span>
+        <span id="m-critical" class="metric-value">0</span>
+      </div>
+      <div class="metric-card">
+        <span class="metric-label">Systems Synced</span>
+        <span class="metric-value" style="color: #06b6d4;">4 Adapters</span>
+      </div>
+    </div>
+
+    <!-- View 1: Central Document Repository -->
+    <section id="view-repo" class="view-panel" style="display: block;">
+      <div class="repo-header">
+        <div class="search-input-box">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="repo-search-input" placeholder="Search FIR number, keyword, title, hash, or external ID...">
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+          <select id="filter-type-select" class="select-custom" style="width: 220px;">
+            <option value="">All Document Types</option>
+            <option value="FIR">FIR / Police Reports</option>
+            <option value="Forensic Report">Forensic Reports</option>
+            <option value="Witness Statement">Witness Statements</option>
+            <option value="Charge Sheet">Charge Sheets</option>
+            <option value="Evidence Record">Evidence Records</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="doc-grid-container" class="doc-grid"></div>
+    </section>
+
+    <!-- View 2: Interactive Provenance Graph -->
+    <section id="view-graph" class="view-panel" style="display: none;">
+      <div class="graph-viewport">
+        <div class="graph-toolbar" style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+          <div style="display:flex; gap:8px;">
+            <button id="btn-layout-tree" class="btn-primary" style="font-size:12px; padding:6px 12px;">
+              <span>🌳</span> Hierarchical Tree Layout
+            </button>
+            <button id="btn-layout-force" class="btn-secondary" style="font-size:12px; padding:6px 12px;">
+              <span>🕸️</span> Dynamic Force Network
+            </button>
+          </div>
+          <div style="display:flex; gap:8px;">
+            <button id="btn-demo-tamper" class="btn-danger">
+              <span>⚡</span> Simulate Forensic Tampering
+            </button>
+            <button id="btn-reset-tamper" class="btn-secondary">
+              <span>🔄</span> Reset State
+            </button>
+            <button id="btn-verify-hash" class="btn-primary">
+              <span>🔍</span> Verify SHA-256
+            </button>
+          </div>
+        </div>
+        <div id="graph-viewport-container" style="width: 100%; height: 100%;"></div>
+      </div>
+    </section>
+
+    <!-- View 3: Blockchain Ledger View -->
+    <section id="view-blockchain" class="view-panel" style="display: none;">
+      <div style="margin-bottom: 16px;">
+        <h3 style="font-size: 16px; font-weight: 700;">Immutable Blockchain Verification Ledger</h3>
+        <p style="font-size: 12px; color: #94a3b8;">Cryptographic proof of document creation, eSign signatures, and modification history.</p>
+      </div>
+      <div id="blockchain-ledger-container"></div>
+    </section>
+
+    <!-- View 4: Police Asset Register -->
+    <section id="view-assets" class="view-panel" style="display: none;">
+      <div style="margin-bottom: 16px;">
+        <h3 style="font-size: 16px; font-weight: 700;">Police Asset & Evidence Physical Inventory</h3>
+        <p style="font-size: 12px; color: #94a3b8;">Lifecycle tracking for seized physical assets, forensic hard drives, and weapons.</p>
+      </div>
+      <div id="police-assets-container" class="doc-grid"></div>
+    </section>
+
+    <!-- View 5: Supervisor Access Approval Queue -->
+    <section id="view-queue" class="view-panel" style="display: none;">
+      <div style="margin-bottom: 16px;">
+        <h3 style="font-size: 16px; font-weight: 700;">Supervisor Access Grant Approval Queue</h3>
+        <p style="font-size: 12px; color: #94a3b8;">Review and approve sensitive document access requests submitted by officers.</p>
+      </div>
+      <div id="access-queue-container"></div>
+    </section>
+
+    <!-- View 6: Audit Trail -->
+    <section id="view-audit" class="view-panel" style="display: none;">
+      <div style="margin-bottom: 16px;">
+        <h3 style="font-size: 16px; font-weight: 700;">Complete Immutable Audit Trail</h3>
+        <p style="font-size: 12px; color: #94a3b8;">Record of all document access, approvals, modifications, and hash checks.</p>
+      </div>
+      <div id="audit-trail-container"></div>
+    </section>
+
+  </main>
+
+  <!-- Slide-Over Drawer -->
+  <div id="drawer-panel" class="drawer-panel">
+    <div class="drawer-header">
+      <div>
+        <div id="d-id" style="font-weight: 800; font-size: 18px; color: white;">DOC-000</div>
+        <div id="d-title" style="font-size: 13px; color: #94a3b8;">Document Title</div>
+      </div>
+      <button id="close-drawer-btn" style="background:none; border:none; color:white; font-size:22px; cursor:pointer;">&times;</button>
+    </div>
+
+    <div class="drawer-body">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <span id="d-status-badge" class="badge-pill verified">VERIFIED</span>
+        <button id="btn-explain-why" class="btn-danger" style="display:none; font-size:12px;">
+          <span>❓</span> Why is this affected?
+        </button>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:10px; margin-top:10px;">
+        <button id="btn-open-viewer" class="btn-primary" style="justify-content:center;">
+          <span>👁️</span> Open Controlled Secure Viewer
+        </button>
+        <a id="btn-download-pdf" target="_blank" class="btn-secondary" style="justify-content:center; text-decoration:none;">
+          <span>📄</span> Download Original Physical PDF
+        </a>
+        <button id="btn-request-access" class="btn-secondary" style="justify-content:center;">
+          <span>🛡️</span> Request Supervisor Access Clearance
+        </button>
+        <button id="btn-pii-redact" class="btn-secondary" style="justify-content:center;">
+          <span>✂️</span> Create PII Redacted Derivative
+        </button>
+        <button id="btn-sim-impact" class="btn-secondary" style="justify-content:center;">
+          <span>🔬</span> Counterfactual Impact Simulation
+        </button>
+      </div>
+
+      <div style="margin-top: 16px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: #94a3b8; text-transform: uppercase;">Cryptographic Hash</h4>
+        <div id="d-hash" style="font-family: monospace; font-size: 11px; background: rgba(30,41,59,0.6); padding: 8px; border-radius: 6px; margin-top: 4px; word-break: break-all;">-</div>
+      </div>
+
+      <div style="margin-top: 16px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: #94a3b8; text-transform: uppercase;">Audit Records</h4>
+        <div id="d-audit-logs-list" style="margin-top: 6px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Access Clearance Required Modal -->
+  <div id="permission-modal" class="modal-overlay">
+    <div class="modal-card" style="width: 580px;">
+      <div class="modal-header" style="background: rgba(239,68,68,0.15); border-bottom: 1px solid rgba(239,68,68,0.3);">
+        <div style="font-weight: 800; color: #ef4444; font-size: 16px; display:flex; align-items:center; gap:8px;">
+          <span>🔒</span> ACCESS BLOCKED — SUPERVISOR APPROVAL REQUIRED
+        </div>
+        <button onclick="document.getElementById('permission-modal').classList.remove('active')" style="background:none; border:none; color:white; font-size:22px; cursor:pointer;">&times;</button>
+      </div>
+
+      <div class="modal-body" style="gap:16px;">
+        <div style="background: rgba(30,41,59,0.6); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:16px;">
+          <div style="font-size:14px; font-weight:700; color:white;" id="perm-doc-title">Document Title</div>
+          <div style="font-size:12px; color:#94a3b8; margin-top:4px;">ID: <strong id="perm-doc-id" style="color:#38bdf8;">DOC-000</strong> &bull; CLASSIFICATION: <span id="perm-doc-class" style="color:#f59e0b; font-weight:700;">CONFIDENTIAL</span></div>
+          <div style="font-size:12px; color:#ef4444; margin-top:12px; font-weight:600; line-height:1.5;">
+            ⚠️ This document contains restricted legal evidence or forensic reports. Pursuant to NCRB security protocols, Investigators must obtain explicit Superintendent of Police (SP) authorization before viewing.
+          </div>
+        </div>
+
+        <div id="perm-status-box" style="padding:12px; background:rgba(245,158,11,0.12); border:1px solid rgba(245,158,11,0.3); border-radius:8px; font-size:12px; color:#f59e0b;">
+          Status: <strong>NO CLEARANCE APPROVED</strong>
+        </div>
+
+        <div>
+          <label style="font-size:11px; color:#94a3b8; font-weight:700;">PURPOSE / REASON FOR ACCESS</label>
+          <input type="text" id="perm-reason-input" class="select-custom" value="Official Case Investigation Review" style="width:100%; margin-top:4px;">
+        </div>
+
+        <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:8px;">
+          <button id="btn-submit-perm-request" class="btn-primary">
+            <span>📩</span> Submit Access Request to SP Dr. Sen
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Physical PDF / Document Upload Modal -->
+  <div id="upload-modal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div style="font-weight: 700; color: white; font-size: 16px;">Digitize & Upload Physical PDF File</div>
+        <button onclick="document.getElementById('upload-modal').classList.remove('active')" style="background:none; border:none; color:white; font-size:22px; cursor:pointer;">&times;</button>
+      </div>
+      <div class="modal-body">
+        
+        <div>
+          <label style="font-size:11px; color:#38bdf8; font-weight:800;">SELECT PHYSICAL FILE (.PDF, .PNG, .JPG, .DOCX)</label>
+          <input type="file" id="up-file" class="select-custom" accept=".pdf,.png,.jpg,.jpeg,.docx,.txt" style="width:100%; padding:8px;">
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px;">
+          <div>
+            <label style="font-size:11px; color:#94a3b8; font-weight:700;">DOCUMENT TITLE</label>
+            <input type="text" id="up-title" class="select-custom" placeholder="e.g. Supplementary Witness Statement" style="width:100%;">
+          </div>
+          <div>
+            <label style="font-size:11px; color:#94a3b8; font-weight:700;">DOCUMENT TYPE</label>
+            <select id="up-type" class="select-custom" style="width:100%;">
+              <option value="FIR">FIR / Police Report</option>
+              <option value="Investigation Report">Investigation Report</option>
+              <option value="Witness Statement">Witness Statement</option>
+              <option value="Charge Sheet">Charge Sheet</option>
+              <option value="Evidence Record">Evidence & Seizure Memo</option>
+              <option value="Forensic Report">Forensic & Pathology Report</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label style="font-size:11px; color:#94a3b8; font-weight:700;">CLASSIFICATION</label>
+          <select id="up-class" class="select-custom" style="width:100%;">
+            <option value="Confidential">Confidential</option>
+            <option value="Highly Confidential">Highly Confidential</option>
+            <option value="Restricted">Restricted</option>
+            <option value="Public Record">Public Record</option>
+          </select>
+        </div>
+
+        <div>
+          <label style="font-size:11px; color:#94a3b8; font-weight:700;">DESCRIPTION / NOTES</label>
+          <input type="text" id="up-desc" class="select-custom" placeholder="Brief summary of document..." style="width:100%;">
+        </div>
+
+        <div>
+          <label style="font-size:11px; color:#94a3b8; font-weight:700;">MANUAL TEXT OVERRIDE (OPTIONAL IF PDF ATTACHED)</label>
+          <textarea id="up-content" rows="4" style="background:#1e293b; color:white; border:1px solid #475569; border-radius:8px; padding:10px; width:100%; font-family:sans-serif;" placeholder="Text content will be automatically extracted if PDF is attached..."></textarea>
+        </div>
+
+        <button id="btn-submit-upload" class="btn-primary" style="justify-content:center;">
+          <span>🔒</span> Upload, Generate eSign Signature & Commit to Blockchain
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Secure Viewer Modal -->
+  <div id="secure-viewer-modal" class="modal-overlay">
+    <div class="modal-card" style="width: 840px;">
+      <div class="modal-header">
+        <div>
+          <div id="viewer-doc-title" style="font-weight: 700; color: white; font-size: 16px;">Document Viewer</div>
+          <div style="font-size: 11px; color: #94a3b8;">SECURE VIEW-ONLY SESSION &bull; CLASSIFICATION: <span id="viewer-doc-classification">CONFIDENTIAL</span></div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <span style="font-size: 12px; color: #f59e0b; font-weight: 700;">EXPIRATION: <span id="viewer-timer">30:00</span></span>
+          <button onclick="window.SecureViewer.close()" style="background:none; border:none; color:white; font-size:22px; cursor:pointer;">&times;</button>
+        </div>
+      </div>
+
+      <div class="modal-body">
+        <div class="secure-notice-bar">
+          <span>🔒 CONTROLLED SECURE VIEW: Copy, Print, and Download disabled. Access session audited in NCRB Blockchain Ledger.</span>
+        </div>
+
+        <div id="viewer-content-area" class="secure-viewer-container">
+          <div id="viewer-watermark-overlay" class="watermark-overlay"></div>
+          <div id="viewer-content-body" style="line-height: 1.7; font-size: 14px; position: relative; z-index: 2;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Explain Impact Modal -->
+  <div id="explain-modal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div style="font-weight: 700; color: white;">Why is <span id="explain-doc-id">DOC</span> affected?</div>
+        <button onclick="document.getElementById('explain-modal').classList.remove('active')" style="background:none; border:none; color:white; font-size:20px; cursor:pointer;">&times;</button>
+      </div>
+      <div id="explain-modal-body" class="modal-body"></div>
+    </div>
+  </div>
+
+  <!-- Redact Modal -->
+  <div id="redact-modal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div style="font-weight: 700; color: white;">Create PII Redacted Derivative — <span id="redact-doc-id">DOC</span></div>
+        <button onclick="document.getElementById('redact-modal').classList.remove('active')" style="background:none; border:none; color:white; font-size:20px; cursor:pointer;">&times;</button>
+      </div>
+      <div class="modal-body">
+        <button id="btn-auto-scrub" class="btn-warning" style="width: max-content;">Auto-Scrub PII Patterns</button>
+        <textarea id="redact-content-input" rows="8" style="background:#1e293b; color:white; border:1px solid #475569; border-radius:8px; padding:12px; font-family:monospace; width:100%;"></textarea>
+        <button id="btn-submit-redaction" class="btn-primary">Generate Redacted Derivative</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Simulation Modal -->
+  <div id="sim-modal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div style="font-weight: 700; color: white;">Counterfactual Impact Simulation — <span id="sim-doc-id">DOC</span></div>
+        <button onclick="document.getElementById('sim-modal').classList.remove('active')" style="background:none; border:none; color:white; font-size:20px; cursor:pointer;">&times;</button>
+      </div>
+      <div id="sim-modal-body" class="modal-body"></div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/js/graph.js"></script>
+  <script src="/js/viewer.js"></script>
+  <script src="/js/audit.js"></script>
+  <script src="/js/app.js"></script>
+
+</body>
+</html>

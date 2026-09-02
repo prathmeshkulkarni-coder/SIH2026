@@ -1,0 +1,6 @@
+event_id,document_id,user_id,event_type,timestamp
+E001,DOC-001,OFF-001,created,2026-08-10 10:30:00
+E002,DOC-005,LAB-001,created,2026-08-12 16:00:00
+E003,DOC-005,OFF-002,access_requested,2026-08-12 16:30:00
+E004,DOC-005,SUP-001,access_approved,2026-08-12 16:45:00
+E005,DOC-008,OFF-001,created,2026-08-15 15:30:00

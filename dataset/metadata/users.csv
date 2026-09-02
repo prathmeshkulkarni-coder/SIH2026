@@ -1,0 +1,8 @@
+user_id,username,hashed_password,name,role,department,badge_number
+OFF-001,vikram,password123,Insp. Vikram Sharma,Investigator,Cyber Crime Branch,IND-NCRB-8821
+OFF-002,priya,password123,Sub-Insp. Priya Singh,Investigator,Cyber Crime Branch,IND-NCRB-8822
+SUP-001,drsen,password123,SP Dr. Ananya Sen,Supervisor,Superintendent of Police,IND-NCRB-9001
+LAB-001,malviya,password123,Dr. Malviya,Forensic Analyst,CFSL Cyber Division,IND-CFSL-7712
+PRO-001,deshmukh,password123,Adv. Deshmukh,Prosecutor,Directorate of Prosecution,IND-DOP-4410
+CRT-001,magistrate,password123,Hon. Magistrate Verma,Court Officer,District & Sessions Court,IND-JUD-1001
+AUD-001,raman,password123,Auditor Raman,Auditor,NCRB Audit Directorate,IND-NCRB-007

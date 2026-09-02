@@ -1,0 +1,4 @@
+request_id,document_id,requested_by,reason,status,approved_by
+AR-001,DOC-005,OFF-002,Review forensic evidence payload trace,Approved,SUP-001
+AR-002,DOC-008,PRO-001,Prepare prosecution arguments for bail hearing,Approved,SUP-001
+AR-003,DOC-003,OFF-002,Inspect physical hardware serial logs,Pending,

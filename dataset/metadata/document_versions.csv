@@ -1,0 +1,20 @@
+version_id,document_id,version,hash,created_by,created_at,status,file_path
+V-DOC-001-v1,DOC-001,1,f4e9930910a7857a9d798f5df776245932a088199775ae7b7ea8dc241c7bd13a,OFF-001,2026-08-10 10:30,Current,/documents/DOC-001_FIR.pdf
+V-DOC-002-v1,DOC-002,1,3be09792dba45bc2c0b4093b5dd7d413997d24c8b272c89a8b6f545be59b33ce,OFF-001,2026-08-10 14:15,Current,/documents/DOC-002_Witness_Statement.pdf
+V-DOC-003-v1,DOC-003,1,0d49a6683c21777ddf423efd644a6b0441e5fecbd6e4bc533e9d4dcb48a17aad,OFF-001,2026-08-11 09:45,Current,/documents/DOC-003_Evidence_Record.pdf
+V-DOC-004-v1,DOC-004,1,d5048d1de702f0a5d4ee6e66f679bd85c0b2dc4b8f77090e433885f3b5a99491,OFF-002,2026-08-11 11:20,Current,/documents/DOC-004_Evidence_Photo.pdf
+V-DOC-005-v1,DOC-005,1,0f983d05ce2f88989397f53206c465ae65df6c432156cced38f6b30564b7b15a,LAB-001,2026-08-12 16:00,Current,/documents/DOC-005_Forensic_Report.pdf
+V-DOC-006-v1,DOC-006,1,b35075fd4cdbc44217e7b0dd60c46bc30afc7283d78f1f50f85f7c907513ea28,OFF-001,2026-08-13 11:00,Superseded,/documents/DOC-006_Investigation_Report.pdf
+V-DOC-006-v2,DOC-006,2,b35075fd4cdbc44217e7b0dd60c46bc30afc7283d78f1f50f85f7c907513ea28,OFF-001,2026-08-13 11:00,Current,/documents/DOC-006_Investigation_Report.pdf
+V-DOC-007-v1,DOC-007,1,21644d867bab84dddc142f3cf9681fc11ed4d239d766a08149d14dfe2365e245,OFF-002,2026-08-14 10:30,Current,/documents/DOC-007_Supplementary_Report.pdf
+V-DOC-008-v1,DOC-008,1,57683364c902b90391420cc9daf2cfacf5c37d8e5900eae4ab4f9e8c5e2f395d,OFF-001,2026-08-15 15:30,Current,/documents/DOC-008_Charge_Sheet.pdf
+V-DOC-009-v1,DOC-009,1,0b22829c4afb14cf64e1d9d7e9e072faddd183ea4300cae89e2a5e196d98f40f,PRO-001,2026-08-16 11:00,Current,/documents/DOC-009_Court_Submission.pdf
+V-DOC-010-v1,DOC-010,1,9232b7c2a4062efc9a55d0652cb9a04e47cc176cf4699a04d02d7fedea17a37a,OFF-002,2026-08-16 14:00,Current,/documents/DOC-010_Translated_Charge_Sheet.pdf
+V-DOC-011-v1,DOC-011,1,e47b97f597b80ce8714f04fa7bec9c2bee1d7929e041e2230f8f90d6ae84af09,OFF-001,2026-08-17 09:30,Current,/documents/DOC-011_Redacted_Witness_Statement.pdf
+V-DOC-012-v1,DOC-012,1,100082fa57b929b25d0efb65bf28861aec16fb2dc00a911de5036bf0628e669e,OFF-001,2026-08-18 12:00,Current,/documents/DOC-012_Revised_Investigation_Report.pdf
+V-DOC-020-v1,DOC-020,1,18894b27eaebef014da8d7e5075269cc6be45d48fa9f9af319c8ec6bee661833,OFF-002,2026-08-12 12:00,Current,/documents/DOC-020_FIR.pdf
+V-DOC-021-v1,DOC-021,1,4cad09c8c71c8bf34376a2263e7fc255da5bb4755ebad8a5b482bc7837371c91,LAB-001,2026-08-13 15:00,Current,/documents/DOC-021_Forensic_Report.pdf
+V-DOC-022-v1,DOC-022,1,d661cb164e1e3430ab282ed95818b2bf5323acb0494d406be9d52ee314915e64,OFF-002,2026-08-15 17:00,Current,/documents/DOC-022_Charge_Sheet.pdf
+V-DOC-030-v1,DOC-030,1,07d1fdca99c4fb2edd9b203d52ec5f91d21dbbf41fca412734698b09107a89e7,OFF-001,2026-08-15 10:00,Current,/documents/DOC-030_FIR.pdf
+V-DOC-031-v1,DOC-031,1,5f869c1918822d061cadc3b64574a199c4f489a9db216ce696b76a55296c3b3c,OFF-001,2026-08-16 11:30,Current,/documents/DOC-031_Evidence_Record.pdf
+V-DOC-032-v1,DOC-032,1,20dc7492dad68b53e4768a90a1117ac777de617db27a9dcfe18f18dd2a15866b,LAB-001,2026-08-17 16:30,Current,/documents/DOC-032_Forensic_Report.pdf
