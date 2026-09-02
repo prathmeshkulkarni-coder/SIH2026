@@ -1,0 +1,48 @@
+version: "3.9"
+
+services:
+  # --------------------------------------------------------------
+  # FastAPI backend + UI
+  # --------------------------------------------------------------
+  app:
+    build: .
+    container_name: tracex_app
+    restart: unless-stopped
+    env_file:
+      - .env               # loads DB credentials, SECRET_KEY, etc.
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./:/app            # mount source for live reload (dev only)
+      - /app/.venv         # mask the host virtualenv
+    depends_on:
+      db:
+        condition: service_healthy
+    command: >
+      sh -c "python -c 'from backend.database import init_db; init_db()' && uvicorn backend.app:app --host 0.0.0.0 --port 8000 --reload"
+
+  # --------------------------------------------------------------
+  # PostgreSQL database
+  # --------------------------------------------------------------
+  db:
+    image: postgres:15-alpine
+    container_name: tracex_db
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${DB_USER:-ncrb_admin}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-SecureNcrbPassword2026!}
+      POSTGRES_DB: ${DB_NAME:-ncrb_dms_db}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-ncrb_admin} -d ${DB_NAME:-ncrb_dms_db}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
