@@ -121,6 +121,18 @@ class AccessRequestDB(Base):
     expires_at = Column(String(50), nullable=True)
 
 
+class AuthSessionDB(Base):
+    """
+    Server-side login sessions. The bearer token a client presents is looked up here to
+    establish who is calling, so a caller can never assert their own identity or role.
+    """
+    __tablename__ = "auth_sessions"
+    token = Column(String(80), primary_key=True)
+    user_id = Column(String(50), nullable=False, index=True)
+    created_at = Column(String(50), nullable=False)
+    expires_at = Column(String(50), nullable=False)
+
+
 class AuditLogDB(Base):
     __tablename__ = "audit_logs"
     event_id = Column(String(50), primary_key=True)

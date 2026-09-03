@@ -7,6 +7,7 @@
 window.SecureViewer = {
   modalEl: null,
   timerInterval: null,
+  objectUrl: null,
 
   open(documentNode, sessionInfo = null, currentUser = null) {
     let modal = document.getElementById('secure-viewer-modal');
@@ -14,7 +15,7 @@ window.SecureViewer = {
 
     const docId = documentNode.document_id;
     const title = documentNode.title;
-    const content = documentNode.content_text || 'No preview available.';
+    const content = documentNode.content_text || 'No extracted text is available for this document.';
     
     const officerName = currentUser ? currentUser.name : 'Insp. Vikram Sharma (INV-204)';
     const officerBadge = currentUser ? currentUser.badge_number : 'IND-EOW-8821';
@@ -26,6 +27,10 @@ window.SecureViewer = {
     document.getElementById('viewer-doc-title').innerText = `${docId} — ${title}`;
     document.getElementById('viewer-doc-classification').innerText = documentNode.classification;
     document.getElementById('viewer-content-body').innerText = content;
+
+    // The original PDF is shown here — never as a download. The server re-checks
+    // supervisor clearance before streaming any bytes.
+    this.loadOriginalFile(docId);
 
     // Build dynamic watermark text
     const watermarkHtml = `
@@ -58,6 +63,75 @@ window.SecureViewer = {
     const modal = document.getElementById('secure-viewer-modal');
     if (modal) modal.classList.remove('active');
     if (this.timerInterval) clearInterval(this.timerInterval);
+    this.releaseObjectUrl();
+
+    const frame = document.getElementById('viewer-file-frame');
+    const container = document.getElementById('viewer-content-area');
+    const textBody = document.getElementById('viewer-content-body');
+    if (frame) {
+      frame.src = '';
+      frame.style.display = 'none';
+    }
+    if (container) container.classList.remove('showing-file');
+    if (textBody) textBody.style.display = '';
+  },
+
+  releaseObjectUrl() {
+    if (this.objectUrl) {
+      URL.revokeObjectURL(this.objectUrl);
+      this.objectUrl = null;
+    }
+  },
+
+  /**
+   * Render the original file inside the viewer iframe. If the server has no stored
+   * file, the extracted text already in the modal stays visible.
+   */
+  loadOriginalFile(docId) {
+    const frame = document.getElementById('viewer-file-frame');
+    const textBody = document.getElementById('viewer-content-body');
+    const sourceLabel = document.getElementById('viewer-source-label');
+    const container = document.getElementById('viewer-content-area');
+
+    this.releaseObjectUrl();
+    if (frame) {
+      frame.src = '';
+      frame.style.display = 'none';
+    }
+    if (container) container.classList.remove('showing-file');
+    if (textBody) textBody.style.display = '';
+    if (sourceLabel) sourceLabel.innerText = 'Loading original document…';
+
+    if (!window.CustodyApp || typeof window.CustodyApp.fetchDocumentForPreview !== 'function') {
+      if (sourceLabel) sourceLabel.innerText = 'Showing extracted text. Original file is not available.';
+      return;
+    }
+
+    window.CustodyApp.fetchDocumentForPreview(docId)
+      .then(file => {
+        if (!file) {
+          if (sourceLabel) {
+            sourceLabel.innerText = 'Original file is not stored on the server. Showing extracted text.';
+          }
+          return;
+        }
+
+        this.objectUrl = file.url;
+        if (frame) {
+          frame.src = file.url;
+          frame.style.display = 'block';
+        }
+        if (textBody) textBody.style.display = 'none';
+        if (container) container.classList.add('showing-file');
+        if (sourceLabel) {
+          sourceLabel.innerText = 'Original document opened in a view-only session. Download is disabled.';
+        }
+      })
+      .catch(err => {
+        if (sourceLabel) {
+          sourceLabel.innerText = err.message || 'Could not load the original file. Showing extracted text.';
+        }
+      });
   },
 
   startCountdown(secondsLeft) {

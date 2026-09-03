@@ -1,0 +1,11 @@
+COURT-SAFE COPY — PUBLIC RECORD
+================================================
+Source document : DOC-002 — Witness Statement of Bank Nodal Officer
+Source remains  : Confidential (unchanged, not attached)
+Personal identifiers have been removed so this copy may be shown in court.
+================================================
+
+Witness [REDACTED NAME] confirms login attempt from IP [REDACTED IP ADDRESS] using compromise admin credentials.
+
+================================================
+The original document was not edited. This copy is linked on the provenance graph as redacted_from the source above.

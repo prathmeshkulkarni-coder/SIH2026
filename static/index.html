@@ -17,18 +17,18 @@
     <div class="login-card">
       <div class="login-header">
         <div class="ncrb-emblem" style="width:54px; height:54px; font-size:24px;">MHA</div>
-        <div style="font-size:20px; font-weight:800; color:white; margin-top:6px;">NCRB SECURE DMS AUTHENTICATION</div>
-        <div style="font-size:12px; color:#94a3b8;">Ministry of Home Affairs &bull; National Crime Records Bureau (SIH26190)</div>
+        <div style="font-size:20px; font-weight:800; color:var(--navy); margin-top:6px;">NCRB SECURE DMS AUTHENTICATION</div>
+        <div style="font-size:12px; color:var(--text-secondary);">Ministry of Home Affairs &bull; National Crime Records Bureau (SIH26190)</div>
       </div>
 
       <div style="display:flex; flex-direction:column; gap:12px; margin-top:8px;">
         <div>
-          <label style="font-size:11px; color:#94a3b8; font-weight:700;">OFFICER USERNAME</label>
+          <label style="font-size:11px; color:var(--text-secondary); font-weight:700;">OFFICER USERNAME</label>
           <input type="text" id="login-username" class="select-custom" placeholder="e.g. vikram or drsen" value="vikram" style="width:100%; padding:12px;">
         </div>
 
         <div>
-          <label style="font-size:11px; color:#94a3b8; font-weight:700;">PASSWORD</label>
+          <label style="font-size:11px; color:var(--text-secondary); font-weight:700;">PASSWORD</label>
           <input type="password" id="login-password" class="select-custom" placeholder="Password" value="password123" style="width:100%; padding:12px;">
         </div>
 
@@ -37,39 +37,39 @@
         </button>
       </div>
 
-      <div style="border-top: 1px solid rgba(255,255,255,0.08); padding-top: 16px; margin-top: 6px;">
-        <div style="font-size: 11px; color: #94a3b8; font-weight: 700; text-transform: uppercase; margin-bottom: 10px;">Quick Demo Account Selector:</div>
+      <div style="border-top: 1px solid var(--border-light); padding-top: 16px; margin-top: 6px;">
+        <div style="font-size: 11px; color: var(--text-secondary); font-weight: 700; text-transform: uppercase; margin-bottom: 10px;">Quick Demo Account Selector:</div>
         <div style="display: flex; flex-direction: column; gap: 8px;">
           <div class="demo-account-chip" onclick="window.CustodyApp.quickFillLogin('vikram', 'password123')">
             <div>
-              <strong style="color:white;">👮 Insp. Vikram Sharma</strong>
-              <div style="font-size:10px; color:#94a3b8;">Role: Investigator (OFF-001)</div>
+              <strong style="color:var(--text-primary);">👮 Insp. Vikram Sharma</strong>
+              <div style="font-size:10px; color:var(--text-secondary);">Role: Investigator (OFF-001)</div>
             </div>
-            <span style="font-family:monospace; color:#38bdf8; font-size:11px;">vikram</span>
+            <span style="font-family:monospace; color:var(--accent-blue); font-size:11px;">vikram</span>
           </div>
 
           <div class="demo-account-chip" onclick="window.CustodyApp.quickFillLogin('drsen', 'password123')">
             <div>
-              <strong style="color:#fbbf24;">🛡️ SP Dr. Ananya Sen</strong>
-              <div style="font-size:10px; color:#94a3b8;">Role: Supervisor (SUP-001)</div>
+              <strong style="color:var(--accent-gold);">🛡️ SP Dr. Ananya Sen</strong>
+              <div style="font-size:10px; color:var(--text-secondary);">Role: Supervisor (SUP-001)</div>
             </div>
-            <span style="font-family:monospace; color:#fbbf24; font-size:11px;">drsen</span>
+            <span style="font-family:monospace; color:var(--accent-gold); font-size:11px;">drsen</span>
           </div>
 
           <div class="demo-account-chip" onclick="window.CustodyApp.quickFillLogin('malviya', 'password123')">
             <div>
-              <strong style="color:#06b6d4;">🔬 Dr. Malviya</strong>
-              <div style="font-size:10px; color:#94a3b8;">Role: Forensic Analyst (LAB-001)</div>
+              <strong style="color:var(--accent-cyan);">🔬 Dr. Malviya</strong>
+              <div style="font-size:10px; color:var(--text-secondary);">Role: Forensic Analyst (LAB-001)</div>
             </div>
-            <span style="font-family:monospace; color:#06b6d4; font-size:11px;">malviya</span>
+            <span style="font-family:monospace; color:var(--accent-cyan); font-size:11px;">malviya</span>
           </div>
 
           <div class="demo-account-chip" onclick="window.CustodyApp.quickFillLogin('magistrate', 'password123')">
             <div>
-              <strong style="color:#10b981;">🏛️ Hon. Magistrate Verma</strong>
-              <div style="font-size:10px; color:#94a3b8;">Role: Court Officer (CRT-001)</div>
+              <strong style="color:var(--status-verified);">🏛️ Hon. Magistrate Verma</strong>
+              <div style="font-size:10px; color:var(--text-secondary);">Role: Court Officer (CRT-001)</div>
             </div>
-            <span style="font-family:monospace; color:#10b981; font-size:11px;">magistrate</span>
+            <span style="font-family:monospace; color:var(--status-verified); font-size:11px;">magistrate</span>
           </div>
         </div>
       </div>
@@ -90,10 +90,10 @@
       <div id="top-status-banner" class="badge-pill verified">✓ ALL DOCUMENTS VERIFIED & SECURE</div>
       
       <!-- Active User Profile Box -->
-      <div id="user-profile-badge" style="display:flex; align-items:center; gap:10px; background:rgba(30,41,59,0.7); border:1px solid rgba(255,255,255,0.1); padding:6px 14px; border-radius:10px;">
+      <div id="user-profile-badge" class="user-profile-plate">
         <div>
-          <div id="u-display-name" style="font-size:13px; font-weight:800; color:white;">Insp. Vikram Sharma</div>
-          <div id="u-display-role" style="font-size:10px; color:#38bdf8; font-weight:700; text-transform:uppercase;">Investigator &bull; IND-NCRB-8821</div>
+          <div id="u-display-name" style="font-size:13px; font-weight:800; color:var(--text-primary);">Insp. Vikram Sharma</div>
+          <div id="u-display-role" style="font-size:10px; color:var(--accent-blue); font-weight:700; text-transform:uppercase;">Investigator &bull; IND-NCRB-8821</div>
         </div>
         <button id="btn-logout" class="btn-secondary" style="padding:4px 8px; font-size:11px; margin-left:6px;">
           <span>🚪</span> Logout
@@ -123,7 +123,7 @@
 
     <!-- STRICT SUPERVISOR QUEUE TAB (Visible ONLY to Supervisor) -->
     <button id="tab-btn-queue" class="nav-tab-btn" data-view="view-queue" style="display:none;">
-      <span>🛡️</span> Supervisor Queue <span id="pending-count-badge" style="background:#f59e0b; color:black; font-size:10px; font-weight:800; padding:2px 6px; border-radius:9999px; margin-left:4px; display:none;">0</span>
+      <span>🛡️</span> Supervisor Queue <span id="pending-count-badge" style="background:var(--saffron); color:#40260a; font-size:10px; font-weight:800; padding:2px 6px; border-radius:9999px; margin-left:4px; display:none;">0</span>
     </button>
 
     <button class="nav-tab-btn" data-view="view-audit">
@@ -131,7 +131,7 @@
     </button>
 
     <div style="margin-left: auto; display: flex; align-items: center; gap: 10px;">
-      <span style="font-size: 11px; color: #94a3b8; font-weight: 700;">CASE:</span>
+      <span style="font-size: 11px; color: var(--text-on-navy-muted); font-weight: 700;">CASE:</span>
       <select id="case-select" class="select-custom" style="width: 280px;">
         <option value="CASE-001">CASE-001 — State v. Arun Kumar</option>
         <option value="CASE-002">CASE-002 — Union of India v. Cyber Crime</option>
@@ -167,7 +167,7 @@
       </div>
       <div class="metric-card">
         <span class="metric-label">Systems Synced</span>
-        <span class="metric-value" style="color: #06b6d4;">4 Adapters</span>
+        <span class="metric-value" style="color: var(--accent-cyan);">4 Adapters</span>
       </div>
     </div>
 
@@ -197,28 +197,46 @@
     <!-- View 2: Interactive Provenance Graph -->
     <section id="view-graph" class="view-panel" style="display: none;">
       <div class="graph-viewport">
-        <div class="graph-toolbar" style="display:flex; justify-content:space-between; align-items:center; width:100%;">
-          <div style="display:flex; gap:8px;">
-            <button id="btn-layout-tree" class="btn-primary" style="font-size:12px; padding:6px 12px;">
-              <span>🌳</span> Hierarchical Tree Layout
-            </button>
-            <button id="btn-layout-force" class="btn-secondary" style="font-size:12px; padding:6px 12px;">
-              <span>🕸️</span> Dynamic Force Network
+        <div class="graph-toolbar">
+          <div class="toolbar-group">
+            <button id="btn-add-node" class="btn-primary" style="font-size:12px; padding:6px 12px;">
+              <span>➕</span> Add Document to Graph
             </button>
           </div>
-          <div style="display:flex; gap:8px;">
-            <button id="btn-demo-tamper" class="btn-danger">
-              <span>⚡</span> Simulate Forensic Tampering
+
+          <div class="toolbar-divider"></div>
+
+          <div class="toolbar-group">
+            <button id="btn-zoom-in" class="btn-icon" title="Zoom in">+</button>
+            <button id="btn-zoom-out" class="btn-icon" title="Zoom out">−</button>
+            <button id="btn-zoom-fit" class="btn-secondary" style="font-size:12px; padding:6px 10px;" title="Fit the whole lineage in view">
+              <span>🔎</span> Fit
             </button>
-            <button id="btn-reset-tamper" class="btn-secondary">
-              <span>🔄</span> Reset State
+            <button id="btn-clear-focus" class="btn-secondary" style="font-size:12px; padding:6px 10px;" title="Clear the lineage focus">
+              <span>✕</span> Clear Focus
             </button>
-            <button id="btn-verify-hash" class="btn-primary">
+          </div>
+
+          <div style="margin-left:auto; display:flex; gap:8px;">
+            <button id="btn-demo-tamper" class="btn-danger" style="font-size:12px; padding:6px 12px;">
+              <span>⚡</span> Simulate Tampering
+            </button>
+            <button id="btn-reset-tamper" class="btn-secondary" style="font-size:12px; padding:6px 12px;">
+              <span>🔄</span> Reset
+            </button>
+            <button id="btn-verify-hash" class="btn-primary" style="font-size:12px; padding:6px 12px;">
               <span>🔍</span> Verify SHA-256
             </button>
           </div>
         </div>
+
         <div id="graph-viewport-container" style="width: 100%; height: 100%;"></div>
+
+        <div id="graph-legend" class="graph-legend"></div>
+        <div id="graph-tooltip" class="graph-tooltip"></div>
+        <div id="graph-status-hint" class="graph-status-hint">
+          Click a node to focus its lineage &bull; drag to reposition &bull; scroll to zoom
+        </div>
       </div>
     </section>
 
@@ -226,7 +244,7 @@
     <section id="view-blockchain" class="view-panel" style="display: none;">
       <div style="margin-bottom: 16px;">
         <h3 style="font-size: 16px; font-weight: 700;">Immutable Blockchain Verification Ledger</h3>
-        <p style="font-size: 12px; color: #94a3b8;">Cryptographic proof of document creation, eSign signatures, and modification history.</p>
+        <p style="font-size: 12px; color: var(--text-secondary);">Cryptographic proof of document creation, eSign signatures, and modification history.</p>
       </div>
       <div id="blockchain-ledger-container"></div>
     </section>
@@ -235,7 +253,7 @@
     <section id="view-assets" class="view-panel" style="display: none;">
       <div style="margin-bottom: 16px;">
         <h3 style="font-size: 16px; font-weight: 700;">Police Asset & Evidence Physical Inventory</h3>
-        <p style="font-size: 12px; color: #94a3b8;">Lifecycle tracking for seized physical assets, forensic hard drives, and weapons.</p>
+        <p style="font-size: 12px; color: var(--text-secondary);">Lifecycle tracking for seized physical assets, forensic hard drives, and weapons.</p>
       </div>
       <div id="police-assets-container" class="doc-grid"></div>
     </section>
@@ -244,7 +262,7 @@
     <section id="view-queue" class="view-panel" style="display: none;">
       <div style="margin-bottom: 16px;">
         <h3 style="font-size: 16px; font-weight: 700;">Supervisor Access Grant Approval Queue</h3>
-        <p style="font-size: 12px; color: #94a3b8;">Review and approve sensitive document access requests submitted by officers.</p>
+        <p style="font-size: 12px; color: var(--text-secondary);">Review and approve sensitive document access requests submitted by officers.</p>
       </div>
       <div id="access-queue-container"></div>
     </section>
@@ -253,7 +271,7 @@
     <section id="view-audit" class="view-panel" style="display: none;">
       <div style="margin-bottom: 16px;">
         <h3 style="font-size: 16px; font-weight: 700;">Complete Immutable Audit Trail</h3>
-        <p style="font-size: 12px; color: #94a3b8;">Record of all document access, approvals, modifications, and hash checks.</p>
+        <p style="font-size: 12px; color: var(--text-secondary);">Record of all document access, approvals, modifications, and hash checks.</p>
       </div>
       <div id="audit-trail-container"></div>
     </section>
@@ -265,7 +283,7 @@
     <div class="drawer-header">
       <div>
         <div id="d-id" style="font-weight: 800; font-size: 18px; color: white;">DOC-000</div>
-        <div id="d-title" style="font-size: 13px; color: #94a3b8;">Document Title</div>
+        <div id="d-title" class="header-sub" style="font-size: 13px;">Document Title</div>
       </div>
       <button id="close-drawer-btn" style="background:none; border:none; color:white; font-size:22px; cursor:pointer;">&times;</button>
     </div>
@@ -280,16 +298,13 @@
 
       <div style="display:flex; flex-direction:column; gap:10px; margin-top:10px;">
         <button id="btn-open-viewer" class="btn-primary" style="justify-content:center;">
-          <span>👁️</span> Open Controlled Secure Viewer
+          <span>👁️</span> Open Secure Preview
         </button>
-        <a id="btn-download-pdf" target="_blank" class="btn-secondary" style="justify-content:center; text-decoration:none;">
-          <span>📄</span> Download Original Physical PDF
-        </a>
         <button id="btn-request-access" class="btn-secondary" style="justify-content:center;">
           <span>🛡️</span> Request Supervisor Access Clearance
         </button>
         <button id="btn-pii-redact" class="btn-secondary" style="justify-content:center;">
-          <span>✂️</span> Create PII Redacted Derivative
+          <span>✂️</span> Create Court Copy (Hide Personal Details)
         </button>
         <button id="btn-sim-impact" class="btn-secondary" style="justify-content:center;">
           <span>🔬</span> Counterfactual Impact Simulation
@@ -297,12 +312,12 @@
       </div>
 
       <div style="margin-top: 16px;">
-        <h4 style="font-size: 12px; font-weight: 700; color: #94a3b8; text-transform: uppercase;">Cryptographic Hash</h4>
-        <div id="d-hash" style="font-family: monospace; font-size: 11px; background: rgba(30,41,59,0.6); padding: 8px; border-radius: 6px; margin-top: 4px; word-break: break-all;">-</div>
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase;">Cryptographic Hash</h4>
+        <div id="d-hash" class="block-hash" style="margin-top: 4px;">-</div>
       </div>
 
       <div style="margin-top: 16px;">
-        <h4 style="font-size: 12px; font-weight: 700; color: #94a3b8; text-transform: uppercase;">Audit Records</h4>
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase;">Audit Records</h4>
         <div id="d-audit-logs-list" style="margin-top: 6px;"></div>
       </div>
     </div>
@@ -311,28 +326,28 @@
   <!-- Access Clearance Required Modal -->
   <div id="permission-modal" class="modal-overlay">
     <div class="modal-card" style="width: 580px;">
-      <div class="modal-header" style="background: rgba(239,68,68,0.15); border-bottom: 1px solid rgba(239,68,68,0.3);">
-        <div style="font-weight: 800; color: #ef4444; font-size: 16px; display:flex; align-items:center; gap:8px;">
+      <div class="modal-header critical">
+        <div style="font-weight: 800; font-size: 16px; display:flex; align-items:center; gap:8px;">
           <span>🔒</span> ACCESS BLOCKED — SUPERVISOR APPROVAL REQUIRED
         </div>
         <button onclick="document.getElementById('permission-modal').classList.remove('active')" style="background:none; border:none; color:white; font-size:22px; cursor:pointer;">&times;</button>
       </div>
 
       <div class="modal-body" style="gap:16px;">
-        <div style="background: rgba(30,41,59,0.6); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:16px;">
-          <div style="font-size:14px; font-weight:700; color:white;" id="perm-doc-title">Document Title</div>
-          <div style="font-size:12px; color:#94a3b8; margin-top:4px;">ID: <strong id="perm-doc-id" style="color:#38bdf8;">DOC-000</strong> &bull; CLASSIFICATION: <span id="perm-doc-class" style="color:#f59e0b; font-weight:700;">CONFIDENTIAL</span></div>
-          <div style="font-size:12px; color:#ef4444; margin-top:12px; font-weight:600; line-height:1.5;">
+        <div style="background: var(--bg-subtle); border:1px solid var(--border-light); border-left:4px solid var(--status-critical); border-radius:var(--radius); padding:16px;">
+          <div style="font-size:14px; font-weight:700; color:var(--text-primary);" id="perm-doc-title">Document Title</div>
+          <div style="font-size:12px; color:var(--text-secondary); margin-top:4px;">ID: <strong id="perm-doc-id" style="color:var(--accent-blue);">DOC-000</strong> &bull; CLASSIFICATION: <span id="perm-doc-class" style="color:var(--status-warning); font-weight:700;">CONFIDENTIAL</span></div>
+          <div style="font-size:12px; color:var(--status-critical); margin-top:12px; font-weight:600; line-height:1.5;">
             ⚠️ This document contains restricted legal evidence or forensic reports. Pursuant to NCRB security protocols, Investigators must obtain explicit Superintendent of Police (SP) authorization before viewing.
           </div>
         </div>
 
-        <div id="perm-status-box" style="padding:12px; background:rgba(245,158,11,0.12); border:1px solid rgba(245,158,11,0.3); border-radius:8px; font-size:12px; color:#f59e0b;">
+        <div id="perm-status-box" style="padding:12px; background:var(--status-warning-bg); border:1px solid var(--status-warning-border); border-radius:var(--radius); font-size:12px; color:var(--status-warning);">
           Status: <strong>NO CLEARANCE APPROVED</strong>
         </div>
 
         <div>
-          <label style="font-size:11px; color:#94a3b8; font-weight:700;">PURPOSE / REASON FOR ACCESS</label>
+          <label style="font-size:11px; color:var(--text-secondary); font-weight:700;">PURPOSE / REASON FOR ACCESS</label>
           <input type="text" id="perm-reason-input" class="select-custom" value="Official Case Investigation Review" style="width:100%; margin-top:4px;">
         </div>
 
@@ -355,46 +370,66 @@
       <div class="modal-body">
         
         <div>
-          <label style="font-size:11px; color:#38bdf8; font-weight:800;">SELECT PHYSICAL FILE (.PDF, .PNG, .JPG, .DOCX)</label>
+          <label style="font-size:11px; color:var(--accent-blue); font-weight:800;">SELECT PHYSICAL FILE (.PDF, .PNG, .JPG, .DOCX)</label>
           <input type="file" id="up-file" class="select-custom" accept=".pdf,.png,.jpg,.jpeg,.docx,.txt" style="width:100%; padding:8px;">
         </div>
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px;">
           <div>
-            <label style="font-size:11px; color:#94a3b8; font-weight:700;">DOCUMENT TITLE</label>
+            <label style="font-size:11px; color:var(--text-secondary); font-weight:700;">DOCUMENT TITLE</label>
             <input type="text" id="up-title" class="select-custom" placeholder="e.g. Supplementary Witness Statement" style="width:100%;">
           </div>
           <div>
-            <label style="font-size:11px; color:#94a3b8; font-weight:700;">DOCUMENT TYPE</label>
+            <label style="font-size:11px; color:var(--text-secondary); font-weight:700;">DOCUMENT TYPE</label>
             <select id="up-type" class="select-custom" style="width:100%;">
-              <option value="FIR">FIR / Police Report</option>
-              <option value="Investigation Report">Investigation Report</option>
-              <option value="Witness Statement">Witness Statement</option>
-              <option value="Charge Sheet">Charge Sheet</option>
-              <option value="Evidence Record">Evidence & Seizure Memo</option>
-              <option value="Forensic Report">Forensic & Pathology Report</option>
+              <!-- Options come from /api/vocabulary so they match the server's canonical types -->
             </select>
           </div>
         </div>
 
         <div>
-          <label style="font-size:11px; color:#94a3b8; font-weight:700;">CLASSIFICATION</label>
+          <label style="font-size:11px; color:var(--text-secondary); font-weight:700;">CLASSIFICATION</label>
           <select id="up-class" class="select-custom" style="width:100%;">
-            <option value="Confidential">Confidential</option>
-            <option value="Highly Confidential">Highly Confidential</option>
-            <option value="Restricted">Restricted</option>
-            <option value="Public Record">Public Record</option>
+            <!-- Options come from /api/vocabulary -->
           </select>
         </div>
 
+        <div class="provenance-fieldset">
+          <div class="provenance-fieldset-title">
+            <span>🕸️</span> Provenance placement — where this document sits in the case graph
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1.3fr 1fr; gap: 14px;">
+            <div>
+              <label style="font-size:11px; color:var(--text-secondary); font-weight:700;">DERIVED FROM (PARENT DOCUMENTS)</label>
+              <select id="up-parents" class="select-custom" multiple size="6" style="width:100%;">
+                <!-- Options come from /api/cases/{case_id}/documents -->
+              </select>
+              <div style="font-size:10px; color:var(--text-muted); margin-top:4px;">
+                Ctrl / Cmd-click to pick several parents. Leave empty to add a new root document.
+              </div>
+            </div>
+
+            <div style="display:flex; flex-direction:column;">
+              <label style="font-size:11px; color:var(--text-secondary); font-weight:700;">RELATIONSHIP TYPE</label>
+              <select id="up-relationship" class="select-custom" style="width:100%;">
+                <!-- Options come from /api/vocabulary -->
+              </select>
+              <div id="up-lineage-preview" class="lineage-preview">
+                Will be added as a new root node with no parent.
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div>
-          <label style="font-size:11px; color:#94a3b8; font-weight:700;">DESCRIPTION / NOTES</label>
+          <label style="font-size:11px; color:var(--text-secondary); font-weight:700;">DESCRIPTION / NOTES</label>
           <input type="text" id="up-desc" class="select-custom" placeholder="Brief summary of document..." style="width:100%;">
         </div>
 
         <div>
-          <label style="font-size:11px; color:#94a3b8; font-weight:700;">MANUAL TEXT OVERRIDE (OPTIONAL IF PDF ATTACHED)</label>
-          <textarea id="up-content" rows="4" style="background:#1e293b; color:white; border:1px solid #475569; border-radius:8px; padding:10px; width:100%; font-family:sans-serif;" placeholder="Text content will be automatically extracted if PDF is attached..."></textarea>
+          <label style="font-size:11px; color:var(--text-secondary); font-weight:700;">MANUAL TEXT OVERRIDE (OPTIONAL IF PDF ATTACHED)</label>
+          <textarea id="up-content" rows="4" style="font-family:var(--font-sans);" placeholder="Text content will be automatically extracted if PDF is attached..."></textarea>
         </div>
 
         <button id="btn-submit-upload" class="btn-primary" style="justify-content:center;">
@@ -410,10 +445,10 @@
       <div class="modal-header">
         <div>
           <div id="viewer-doc-title" style="font-weight: 700; color: white; font-size: 16px;">Document Viewer</div>
-          <div style="font-size: 11px; color: #94a3b8;">SECURE VIEW-ONLY SESSION &bull; CLASSIFICATION: <span id="viewer-doc-classification">CONFIDENTIAL</span></div>
+          <div class="header-sub" style="font-size: 11px;">SECURE VIEW-ONLY SESSION &bull; CLASSIFICATION: <span id="viewer-doc-classification">CONFIDENTIAL</span></div>
         </div>
         <div style="display: flex; align-items: center; gap: 12px;">
-          <span style="font-size: 12px; color: #f59e0b; font-weight: 700;">EXPIRATION: <span id="viewer-timer">30:00</span></span>
+          <span class="header-warn" style="font-size: 12px;">EXPIRATION: <span id="viewer-timer">30:00</span></span>
           <button onclick="window.SecureViewer.close()" style="background:none; border:none; color:white; font-size:22px; cursor:pointer;">&times;</button>
         </div>
       </div>
@@ -423,8 +458,15 @@
           <span>🔒 CONTROLLED SECURE VIEW: Copy, Print, and Download disabled. Access session audited in NCRB Blockchain Ledger.</span>
         </div>
 
+        <div id="viewer-source-bar" class="viewer-source-bar">
+          <span id="viewer-source-label">Loading original document…</span>
+        </div>
+
         <div id="viewer-content-area" class="secure-viewer-container">
           <div id="viewer-watermark-overlay" class="watermark-overlay"></div>
+          <!-- Original file, rendered in place. Populated only after the server clears
+               this officer for the document. -->
+          <iframe id="viewer-file-frame" class="viewer-file-frame" title="Original document preview"></iframe>
           <div id="viewer-content-body" style="line-height: 1.7; font-size: 14px; position: relative; z-index: 2;"></div>
         </div>
       </div>
@@ -442,17 +484,36 @@
     </div>
   </div>
 
-  <!-- Redact Modal -->
+  <!-- Court Copy / PII Redaction Modal -->
   <div id="redact-modal" class="modal-overlay">
-    <div class="modal-card">
+    <div class="modal-card" style="width: 880px;">
       <div class="modal-header">
-        <div style="font-weight: 700; color: white;">Create PII Redacted Derivative — <span id="redact-doc-id">DOC</span></div>
+        <div>
+          <div style="font-weight: 700; color: white;">Create Court Copy — Hide Personal Details</div>
+          <div class="header-sub" style="font-size: 11px;">Source <span id="redact-doc-id">DOC</span> stays confidential. The new copy is a Public Record the Court can open.</div>
+        </div>
         <button onclick="document.getElementById('redact-modal').classList.remove('active')" style="background:none; border:none; color:white; font-size:20px; cursor:pointer;">&times;</button>
       </div>
       <div class="modal-body">
-        <button id="btn-auto-scrub" class="btn-warning" style="width: max-content;">Auto-Scrub PII Patterns</button>
-        <textarea id="redact-content-input" rows="8" style="background:#1e293b; color:white; border:1px solid #475569; border-radius:8px; padding:12px; font-family:monospace; width:100%;"></textarea>
-        <button id="btn-submit-redaction" class="btn-primary">Generate Redacted Derivative</button>
+        <p class="redact-explainer">
+          The original is never changed. This adds a second node on the graph, linked as
+          <strong>redacted_from</strong>. A judge can open that public copy without seeing
+          names, phones, IP addresses or other personal identifiers.
+        </p>
+        <div class="redact-compare">
+          <div>
+            <h4>What the officer sees (original)</h4>
+            <textarea id="redact-original" rows="8" readonly></textarea>
+          </div>
+          <div>
+            <h4>What the Court will see</h4>
+            <textarea id="redact-content-input" rows="8"></textarea>
+          </div>
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button id="btn-auto-scrub" class="btn-warning">Black out personal details</button>
+          <button id="btn-submit-redaction" class="btn-primary">Create public Court copy</button>
+        </div>
       </div>
     </div>
   </div>
@@ -461,7 +522,7 @@
   <div id="sim-modal" class="modal-overlay">
     <div class="modal-card">
       <div class="modal-header">
-        <div style="font-weight: 700; color: white;">Counterfactual Impact Simulation — <span id="sim-doc-id">DOC</span></div>
+        <div style="font-weight: 700; color: white;">What if this document were compromised? — <span id="sim-doc-id">DOC</span></div>
         <button onclick="document.getElementById('sim-modal').classList.remove('active')" style="background:none; border:none; color:white; font-size:20px; cursor:pointer;">&times;</button>
       </div>
       <div id="sim-modal-body" class="modal-body"></div>
@@ -469,10 +530,10 @@
   </div>
 
   <!-- Scripts -->
-  <script src="/js/graph.js"></script>
-  <script src="/js/viewer.js"></script>
-  <script src="/js/audit.js"></script>
-  <script src="/js/app.js"></script>
+  <script src="/js/graph.js?v=cards-2"></script>
+  <script src="/js/viewer.js?v=cards-2"></script>
+  <script src="/js/audit.js?v=cards-2"></script>
+  <script src="/js/app.js?v=cards-2"></script>
 
 </body>
 </html>

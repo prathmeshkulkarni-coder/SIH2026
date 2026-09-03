@@ -44,12 +44,17 @@ class ProvenanceGraphEngine:
                 "id": doc_id,
                 "document_id": doc_id,
                 "title": doc.title,
+                "description": doc.description,
                 "document_type": dt,
                 "classification": cl,
                 "integrity_status": st,
                 "current_hash": doc.current_hash,
                 "file_path": doc.storage_reference,
-                "version": doc.current_version
+                "version": doc.current_version,
+                "created_at": doc.creation_timestamp,
+                "created_by": doc.creator_name,
+                "external_system_source": doc.external_system_source,
+                "digital_signature": bool(doc.digital_signature)
             })
 
         links = []

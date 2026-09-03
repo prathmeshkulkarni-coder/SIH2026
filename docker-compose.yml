@@ -1,4 +1,4 @@
-version: "3.9"
+
 
 services:
   # --------------------------------------------------------------
@@ -35,7 +35,7 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD:-SecureNcrbPassword2026!}
       POSTGRES_DB: ${DB_NAME:-ncrb_dms_db}
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
