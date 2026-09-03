@@ -41,7 +41,7 @@ from backend.database import (
 )
 
 app = FastAPI(
-    title="NCRB SECURE DMS API",
+    title="TraceX API",
     description="Secure Digital Document Management System for Legal and Investigation Documents (SIH Problem Statement SIH26190)",
     version="2.0.0"
 )

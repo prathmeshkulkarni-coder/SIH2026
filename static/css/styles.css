@@ -190,26 +190,37 @@ a { color: var(--accent-blue); }
   gap: 14px;
 }
 
-.ncrb-emblem {
+.tracex-logo {
   width: 42px;
   height: 42px;
-  background: var(--navy);
-  border: 1px solid var(--navy-dark);
-  border-radius: var(--radius);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 900;
-  font-size: 17px;
-  letter-spacing: 0.5px;
-  color: #ffcc66;
   flex-shrink: 0;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.tracex-logo svg {
+  display: block;
+}
+
+.tracex-logo-lg {
+  width: 54px;
+  height: 54px;
+}
+
+.brand-wordmark {
+  font-size: 28px;
+  font-weight: 900;
+  letter-spacing: -0.6px;
+  color: var(--navy);
+  margin-top: 8px;
+  line-height: 1;
 }
 
 .brand-title {
-  font-size: 17px;
-  font-weight: 800;
-  letter-spacing: 0.2px;
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: -0.4px;
   color: var(--navy);
 }
 
