@@ -1,103 +1,413 @@
-# TraceX: Secure Document Provenance & Dependency Tracking 🛡️
+<p align="center">
+  <img src="./assets/tracex-logo.svg" alt="TraceX logo" width="88" />
+</p>
 
-**TraceX** (also known as NCRB Secure DMS) is an enterprise-grade digital document management and provenance tracking system designed for law enforcement, courts, and investigative departments. It ensures end-to-end transparency, data integrity, and accountability in the digital evidence lifecycle.
+<h1 align="center">TraceX</h1>
 
----
+<p align="center">
+  <strong>Secure Document Provenance &amp; Dependency Tracking</strong><br/>
+  for law enforcement, forensics, prosecutors, and courts
+</p>
 
-## 🎯 Impact and Benefits
+<p align="center">
+  <a href="#-quick-start"><img src="https://img.shields.io/badge/Quick%20Start-8%20minutes-0b3d76?style=for-the-badge" alt="Quick Start" /></a>
+  <a href="#-architecture"><img src="https://img.shields.io/badge/Architecture-Provenance%20DAG-138808?style=for-the-badge" alt="Architecture" /></a>
+  <a href="#-security--access-control"><img src="https://img.shields.io/badge/Security-RBAC%20%2B%20Hash%20Chain-b42318?style=for-the-badge" alt="Security" /></a>
+</p>
 
-![Impact and Benefits](./assets/image_1.png)
-
-TraceX creates transparency, accountability, and trust in every stage of the investigation journey. 
-* **End-to-End Transparency:** Every document's journey is visible from origin to final submission.
-* **Data Integrity & Authenticity:** Integrity verified using SHA-256 hashing, digital signatures, and tamper-evident audit trails.
-* **Dependency Impact Awareness:** Instantly identify all downstream documents affected if a source document has an integrity issue.
-* **Accountability & Auditability:** Complete audit trail of every action, approval, and access.
-
----
-
-## 🚀 Key Features
-
-* **Hierarchical Provenance Graph:** Visualizes document lineage from origin (e.g., FIR) to downstream transformations (Forensic Reports, Charge Sheets). Includes dynamic switching between Tree and Force-directed layouts.
-* **Tamper-Evident Integrity:** Detects unauthorized modifications. If a document's hash is corrupted, TraceX proactively calculates the blast radius and flags downstream dependents for review.
-* **Role-Based Access Control (RBAC) & Approvals:** Granular access based on roles (Investigator, Supervisor, Auditor). Restricted documents require formal access request workflows.
-* **Cryptographic Signatures:** Integrates eSign PKI for legally binding digital signatures.
-
----
-
-## 💻 Technologies Used
-
-![Technologies Used](./assets/image_3.png)
-
-* **Frontend:** Vanilla JS, D3.js (for Graph Engine), HTML5, CSS3 (Glassmorphism UI)
-* **Backend:** FastAPI (Python)
-* **Database:** PostgreSQL (with SQLite fallback for development)
-* **ORM:** SQLAlchemy
-* **Security:** JWT Authentication, SHA-256 Hashing, Role-Based Workflows
+<p align="center">
+  <img src="https://img.shields.io/badge/SIH-26190-ff9933?style=flat-square" alt="SIH 26190" />
+  <img src="https://img.shields.io/badge/Stack-FastAPI%20%7C%20D3.js%20%7C%20PostgreSQL-0b3d76?style=flat-square" alt="Stack" />
+  <img src="https://img.shields.io/badge/Auth-Bearer%20Sessions-0f7b3f?style=flat-square" alt="Auth" />
+  <img src="https://img.shields.io/badge/Integrity-SHA--256%20Ledger-4338ca?style=flat-square" alt="Integrity" />
+  <img src="https://img.shields.io/badge/UI-Government%20of%20India%20Theme-138808?style=flat-square" alt="UI Theme" />
+</p>
 
 ---
 
-## ⚙️ Architecture
+## Why TraceX exists
 
-### DBMS Architecture
-![DBMS Architecture](./assets/image.png)
+Indian criminal-justice platforms already handle **registration, evidence capture, and filing**. What they do not show clearly is:
 
----
+> *Where did this charge sheet come from? Which forensic report fed it? Who was cleared to open the witness statement? If the FIR was tampered with, which later papers must be reviewed?*
 
-## 📊 Feasibility and Viability
+**TraceX fills that gap.** It is a provenance and custody layer that sits beside CCTNS, eSakshya, ICJS, and eCourts — not a replacement for them.
 
-![Feasibility and Viability](./assets/image_4.png)
-
-TraceX is built to be technically feasible, operationally effective, and scalable from a hackathon prototype to an enterprise-level government deployment. It uses adapter-based integration strategies to interface with existing systems like CCTNS, eSakshya, ICJS, and eCourts.
-
----
-
-## 📚 Research & References
-
-![Research & References](./assets/image_2.png)
-
-Designed in compliance with the **Bharatiya Sakshya Adhiniyam, 2023** and **CCA Digital Signature** guidelines, TraceX bridges the gap in provenance tracking within existing government systems.
+<p align="center">
+  <img src="./assets/ecosystem-fit.png" alt="How TraceX complements CCTNS, eSakshya, ICJS, and eCourts" width="920" />
+</p>
 
 ---
 
-## 🛠️ Installation & Setup
+## Impact & benefits
 
-### 1. Clone the repository
-```bash
-git clone https://github.com/your-org/TraceX.git
-cd TraceX
+<p align="center">
+  <img src="./assets/impact-benefits.png" alt="Impact and benefits of TraceX across investigators, prosecutors, auditors, and courts" width="920" />
+</p>
+
+| Stakeholder | What TraceX gives them |
+|---|---|
+| **Investigators** | Full lineage from FIR → seizure → forensic → charge sheet |
+| **Supervisors (SP)** | Per-officer clearance queue; approvals do not leak across users |
+| **Forensic officers** | Own clearances only; cannot inherit another officer’s grant |
+| **Prosecutors** | Verified relationships between case documents |
+| **Courts / Magistrates** | Public court copies with PII removed; original stays confidential |
+| **Auditors** | Tamper blast radius, audit trail, and hash-chain verification |
+
+---
+
+## What you can demo today
+
+| Capability | Status | What it proves |
+|---|---|---|
+| Hierarchical provenance graph (D3) | Live | Case file as a DAG, not a folder |
+| Type-coloured nodes + legend filters | Live | FIR / witness / forensic / charge sheet at a glance |
+| Bearer-token sessions (server-side) | Live | Client cannot assert another officer’s identity |
+| Supervisor access queue | Live | Clearance bound to **one** requester ID |
+| Secure preview (no download) | Live | Original PDF opens only after clearance |
+| Court copy / PII redaction | Live | Public node linked with `redacted_from` |
+| Counterfactual impact simulation | Live | “What if this FIR failed?” — **writes nothing** |
+| Tamper + downstream review | Live | Integrity issue → blast radius of dependents |
+| Hash-chain ledger + verify | Live | Official acts sealed to previous block |
+| Upload → new graph node | Live | Case, type, parents, relationship, eSign stub, ledger block |
+
+---
+
+## Architecture
+
+### System overview
+
+```mermaid
+flowchart TB
+  subgraph Clients
+    UI["Browser SPA<br/>HTML · CSS · Vanilla JS · D3.js"]
+  end
+
+  subgraph TraceX["TraceX Application Layer"]
+    API["FastAPI REST API"]
+    AUTH["Auth & Session Guard<br/>Bearer token → UserDB"]
+    RBAC["Document Access Authority<br/>evaluate_document_access()"]
+    GRAPH["Provenance Graph Engine<br/>BFS impact · lineage · simulation"]
+    INT["Integrity Service<br/>SHA-256 · audit events"]
+    LEDGER["Hash-Chain Ledger<br/>blockchain_blocks"]
+  end
+
+  subgraph Data["Persistence"]
+    DB[("PostgreSQL / SQLite<br/>cases · documents · edges<br/>access_requests · audit · sessions")]
+    FS[("Physical files<br/>dataset/documents/")]
+  end
+
+  UI -->|"HTTPS + Authorization: Bearer"| API
+  API --> AUTH --> RBAC
+  API --> GRAPH
+  API --> INT
+  API --> LEDGER
+  API --> DB
+  API --> FS
 ```
 
-### 2. Set up the Python Virtual Environment
+### Request path for a sensitive document
+
+```mermaid
+sequenceDiagram
+  actor Officer
+  participant UI as TraceX UI
+  participant API as FastAPI
+  participant Auth as AuthSessionDB
+  participant Access as evaluate_document_access
+  participant Store as File Store
+
+  Officer->>UI: Open Secure Preview
+  UI->>API: GET /api/documents/{id}/access-check
+  API->>Auth: Resolve bearer token → UserDB
+  Auth-->>API: Officer identity + role
+  API->>Access: Role? Public? Approved grant for THIS user?
+  Access-->>UI: allowed / pending / denied
+
+  alt Allowed
+    UI->>API: GET /api/documents/{id}/preview
+    API->>Access: Re-check (never trust the first answer alone)
+    API->>Store: Stream bytes (Content-Disposition: inline)
+    API-->>UI: PDF / text in locked viewer
+  else Denied
+    UI-->>Officer: Permission request modal
+  end
+```
+
+### Provenance model
+
+Documents are nodes. Relationships are directed edges.
+
+| Relationship | Meaning |
+|---|---|
+| `derived_from` | Built using an earlier document |
+| `redacted_from` | Public court copy of a confidential source |
+| `translated_from` | Language / regional translation |
+| `revised_from` | Updated investigation record |
+| `referenced_from` | Cited by a later filing |
+| `merged_from` / `summarized_from` | Composite / condensed work product |
+
+If document **A** is compromised, TraceX walks **downstream** and marks dependents for review. Counterfactual simulation uses the same walk **without writing** to the database.
+
+### Database layer
+
+<p align="center">
+  <img src="./assets/dbms-architecture.png" alt="DBMS architecture reference — query, transaction, and storage layers" width="820" />
+</p>
+
+**Core tables TraceX uses**
+
+| Table | Role |
+|---|---|
+| `users` | Officers, roles, demo credentials |
+| `auth_sessions` | Server-side bearer tokens + expiry |
+| `cases` | Case metadata |
+| `documents` | Title, type, classification, hash, file path, integrity status |
+| `provenance_edges` | Source → target relationships |
+| `access_requests` | Pending / approved / revoked clearances (per officer) |
+| `blockchain_blocks` | Hash-linked official-act ledger |
+| `audit_logs` | Who opened, denied, uploaded, approved |
+| `versions` / `integrity_events` | Version history and tamper detections |
+| `police_assets` | Seized physical / digital assets |
+
+---
+
+## Security & access control
+
+### Principles
+
+1. **Identity comes from the token**, never from `?user_role=` or a body field.
+2. **Clearance is per officer.** Approving Vikram for DOC-002 does **not** unlock DOC-002 for Malviya.
+3. **Preview is the only path to original bytes.** There is no download route.
+4. **Every open / denial is audited.**
+5. **Official mutations append a ledger block** (upload, court copy).
+
+### Who can read what
+
+| Caller | Public Record | Confidential / Restricted |
+|---|---|---|
+| Supervisor (SP) | Yes | Yes (role privilege) |
+| Court Officer | Yes | Yes (role privilege) |
+| Investigator / Forensic / Prosecutor / Auditor | Yes | Only with **their own** approved grant |
+| Anonymous | No | No |
+
+### Hash-chain ledger (what “blockchain” means here)
+
+TraceX does **not** put PDFs on a public coin network. It keeps a **permissioned hash chain** in `blockchain_blocks`:
+
+```text
+block_hash = SHA-256( previous_hash + document_content_hash + block_number )
+```
+
+- Each official act (upload, court copy) appends a block that points at the previous hash.
+- `GET /api/blockchain/verify` walks the chain → `INTACT` or `CORRUPTED`.
+- Viewing a file is logged in **audit**, not on the chain. The chain records **committed official versions**.
+
+<p align="center">
+  <img src="./assets/tech-vision.png" alt="Integrity & trust building blocks — hashing, signatures, chained logs" width="420" />
+</p>
+
+> **Honest scope:** this is a departmental hash-chain. A national deployment would also anchor daily tip hashes at a second authority (e.g. NIC) so one DBA cannot rewrite the whole book alone.
+
+---
+
+## Technology stack
+
+| Layer | Choice | Why |
+|---|---|---|
+| API | **FastAPI** + Uvicorn | Typed routes, Fast dependencies for auth |
+| ORM | **SQLAlchemy** | Postgres in Docker, SQLite for local demos |
+| Frontend | **Vanilla JS + D3.js v7** | Zero-build SPA; provenance graph is first-class |
+| UI theme | Government of India light theme | Navy / saffron / India green — presentation-ready |
+| Crypto | **SHA-256**, session bearer tokens | Fingerprints + server-side sessions |
+| Files | Local `dataset/documents/` | PDF / TXT with traversal-safe names |
+| Tests | **pytest** + FastAPI TestClient | Access-leak, preview, court copy, simulation |
+| Deploy | Docker Compose (app + Postgres 15) | One-command stack |
+
+---
+
+## Repository layout
+
+```text
+SIH2026/
+├── backend/
+│   ├── app.py              # REST API, auth, RBAC, upload, ledger, preview
+│   ├── database.py         # SQLAlchemy models + seed from CSV
+│   ├── provenance.py       # DAG engine: impact, explain, simulate
+│   ├── integrity.py        # SHA-256 + in-memory audit helper
+│   ├── models.py           # Pydantic / domain enums
+│   └── seed_data.py        # Rich demo case content
+├── static/
+│   ├── index.html          # TraceX SPA shell
+│   ├── css/styles.css      # GoI light theme
+│   └── js/
+│       ├── app.js          # Controllers, auth header, repository
+│       ├── graph.js        # Hierarchical provenance graph
+│       ├── viewer.js       # Controlled secure preview
+│       └── audit.js        # Court copy + impact simulation UI
+├── dataset/
+│   ├── documents/          # Physical case files
+│   └── metadata/           # CSV seed (users, docs, edges, audits)
+├── tests/                  # pytest suite
+├── assets/                 # README diagrams & TraceX mark
+├── docker-compose.yml
+├── Dockerfile
+└── requirements.txt
+```
+
+---
+
+## Quick start
+
+### Option A — Local (SQLite, fastest)
+
 ```bash
+git clone https://github.com/prathmeshkulkarni-coder/SIH2026.git
+cd SIH2026
+
 python3 -m venv .venv
-source .venv/bin/activate
+source .venv/bin/activate          # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
+
+cp .env.example .env               # default POSTGRES_URL is already SQLite
+python -c "from backend.database import init_db; init_db()"
+
+uvicorn backend.app:app --host 0.0.0.0 --port 8000 --reload
 ```
 
-### 3. Configure Environment Variables
-Copy the example environment file and update the credentials:
+Open **http://localhost:8000**
+
+Or use the helper:
+
+```bash
+./run.sh
+```
+
+### Option B — Docker (Postgres)
+
 ```bash
 cp .env.example .env
-```
-Ensure your database credentials and `SECRET_KEY` are properly configured in `.env`.
+# set DB_PASSWORD and point POSTGRES_URL / DATABASE_URL at the compose service
 
-### 4. Initialize the Database & Seed Data
-```bash
-python -c "from backend.database import init_db; init_db()"
+docker compose up --build
 ```
 
-### 5. Run the Server
-```bash
-uvicorn backend.app:app --reload --host 0.0.0.0 --port 8000
-```
-
-### 6. Access the Application
-Open your browser and navigate to: [http://localhost:8000](http://localhost:8000)
-
-**Default Credentials for Testing:**
-* **Admin/Supervisor:** `username: admin`, `password: admin123`
-* **Investigator:** `username: investigator1`, `password: inv123`
+- App: http://localhost:8000  
+- Postgres published on host port **5433**
 
 ---
-*Built for SIH 2026 - Problem Statement SIH26190*
+
+## Demo accounts
+
+Password for all seeded users: **`password123`**
+
+| Username | Role | Use in the demo |
+|---|---|---|
+| `vikram` | Investigator | Request access, upload, create court copy |
+| `priya` | Investigator | Second IO (shows grants do not cross users) |
+| `drsen` | Supervisor (SP) | Approve access queue |
+| `malviya` | Forensic Analyst | Prove Vikram’s grant does **not** unlock for lab |
+| `magistrate` | Court Officer | Open public court copies without extra clearance |
+| `deshmukh` | Prosecutor | Case review persona |
+| `raman` | Auditor | Audit / integrity persona |
+
+### Suggested 8-minute story
+
+1. Login as **vikram** → open provenance graph (CASE-001).  
+2. Try a confidential node → request access → logout.  
+3. Login as **drsen** → approve Vikram only.  
+4. Login as **malviya** → same document still locked.  
+5. Login as **vikram** → **Open Secure Preview** (no download).  
+6. **Create Court Copy** → new public node with `redacted_from`.  
+7. Login as **magistrate** → open the public copy.  
+8. **Counterfactual Impact Simulation** on DOC-001 → then optional tamper demo.  
+9. Blockchain tab → **Verify** chain intact.
+
+---
+
+## Key API surface
+
+| Method | Path | Purpose |
+|---|---|---|
+| `POST` | `/api/auth/login` | Issue bearer session |
+| `POST` | `/api/auth/logout` | End session; revoke that officer’s grants |
+| `GET` | `/api/cases/{id}/graph` | Nodes + links for the DAG |
+| `GET` | `/api/documents/{id}/access-check` | Server verdict for UI badges |
+| `GET` | `/api/documents/{id}/preview` | Inline original file (authz + audit) |
+| `POST` | `/api/access-requests` | Request clearance (requester = token) |
+| `POST` | `/api/access-requests/{id}/approve` | SP only |
+| `POST` | `/api/documents/upload` | New node + parents + ledger block |
+| `POST` | `/api/documents/{id}/redact` | Public court copy |
+| `POST` | `/api/simulation/impact` | Non-destructive blast-radius preview |
+| `POST` | `/api/documents/{id}/trigger-tamper` | Demo integrity failure |
+| `GET` | `/api/blockchain` | List ledger blocks |
+| `GET` | `/api/blockchain/verify` | Walk previous-hash links |
+
+Interactive docs (when server is up): **http://localhost:8000/docs**
+
+---
+
+## Testing
+
+```bash
+source .venv/bin/activate
+python -m pytest tests/ -q
+```
+
+Coverage includes authentication, per-officer access isolation, preview authorisation, court-copy immutability of the source, impact simulation (no DB writes), and ledger verification.
+
+---
+
+## Feasibility
+
+<p align="center">
+  <img src="./assets/feasibility-viability.png" alt="Feasibility and viability assessment" width="920" />
+</p>
+
+TraceX is intentionally **MVP-first**: provenance graph, integrity, RBAC, and dependency impact ship before full NIC eSign or multi-agency ledger anchoring. Adapter-style integration keeps CCTNS / ICJS / eCourts as sources of truth for registration and filing.
+
+---
+
+## Research & legal context
+
+<p align="center">
+  <img src="./assets/research-references.png" alt="Research references — ICJS, CCTNS, eSakshya, eCourts, BSA 2023, CCA" width="920" />
+</p>
+
+Designed with reference to:
+
+- **Bharatiya Sakshya Adhiniyam, 2023** — electronic records & admissibility  
+- **CCA / MeitY** — digital / electronic signature framework  
+- **CCTNS · ICJS · eSakshya · eCourts** — existing MHA / DoJ systems TraceX complements  
+
+---
+
+## Roadmap (honest)
+
+| Now (prototype) | Next |
+|---|---|
+| SHA-256 content fingerprints | Full Merkle trees per batch |
+| Simulated eSign JSON | NIC / CCA eSign integration |
+| Plaintext demo passwords | bcrypt + Parichay / SSO |
+| Single-DB hash chain | Daily tip-hash anchor at second authority |
+| Local file store | Encrypted object storage (S3 / MinIO) |
+
+---
+
+## Team / hackathon
+
+Built for **Smart India Hackathon** — Problem Statement **SIH26190**  
+Product name: **TraceX** · Domain: NCRB / Ministry of Home Affairs secure document lifecycle
+
+---
+
+## License
+
+Hackathon prototype — see repository for team licensing decisions.
+
+---
+
+<p align="center">
+  <img src="./assets/tracex-logo.svg" alt="TraceX" width="48" /><br/>
+  <sub>TraceX — see the chain, not just the file.</sub>
+</p>

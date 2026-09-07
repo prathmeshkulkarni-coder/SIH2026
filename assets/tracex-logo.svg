@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" width="128" height="128" role="img" aria-label="TraceX">
+  <rect width="40" height="40" rx="4" fill="#0b3d76"/>
+  <path d="M13 13.5 L26.5 19.2 M26.8 21.6 L15.2 27.2" stroke="#cfe0f2" stroke-width="1.7" fill="none"/>
+  <circle cx="12" cy="12" r="3.3" fill="#ff9933"/>
+  <circle cx="28" cy="20" r="3.3" fill="#ffffff"/>
+  <circle cx="14" cy="28" r="3.3" fill="#138808"/>
+</svg>
