@@ -44,7 +44,13 @@ def test_protected_routes_reject_anonymous_and_invalid_tokens(client):
 
 
 def test_access_request_approval_expiry_and_preview(client, db, storage_dir):
-    (storage_dir / "DOC-002.pdf").write_bytes(b"%PDF-1.4 forensic report")
+    from reportlab.pdfgen import canvas
+    from io import BytesIO
+    buf = BytesIO()
+    c = canvas.Canvas(buf)
+    c.drawString(72, 720, "Forensic report body for DOC-002")
+    c.save()
+    (storage_dir / "DOC-002.pdf").write_bytes(buf.getvalue())
     officer = sign_in(client, "investigator")
 
     denied = client.get("/api/documents/DOC-002/access-check", headers=officer).json()
@@ -90,6 +96,9 @@ def test_access_request_approval_expiry_and_preview(client, db, storage_dir):
     served = client.get("/api/documents/DOC-002/preview", headers=officer)
     assert served.status_code == 200 and served.content.startswith(b"%PDF")
     assert served.headers.get("content-disposition", "").startswith("inline")
+    assert served.headers.get("x-tracex-watermark") == "session-bound"
+    # Stamp must identify the viewing officer — DevTools cannot strip this from the bytes
+    assert b"IO Test" in served.content or b"OFF-001" in served.content or b"TRACEX" in served.content
     # The preview is recorded against the officer who opened it — never as a download
     previews = db.query(AuditLogDB).filter_by(event_type="DOCUMENT_PREVIEWED").all()
     assert [(entry.actor_id, entry.document_id) for entry in previews] == [("OFF-001", "DOC-002")]

@@ -1,7 +1,9 @@
 /**
- * CUSTODY CHAIN - Controlled Secure Document Viewer
- * Implements view-only security controls, dynamic session watermarking,
- * copy/print restrictions, and active countdown timer.
+ * TraceX — Controlled Secure Document Viewer
+ *
+ * The session watermark is burned into the preview bytes by the server.
+ * This UI does not paint a DOM overlay (Inspect cannot delete the mark).
+ * Copy / context-menu are still blocked as belt-and-suspenders controls.
  */
 
 window.SecureViewer = {
@@ -10,47 +12,25 @@ window.SecureViewer = {
   objectUrl: null,
 
   open(documentNode, sessionInfo = null, currentUser = null) {
-    let modal = document.getElementById('secure-viewer-modal');
+    const modal = document.getElementById('secure-viewer-modal');
     if (!modal) return;
 
     const docId = documentNode.document_id;
     const title = documentNode.title;
     const content = documentNode.content_text || 'No extracted text is available for this document.';
-    
-    const officerName = currentUser ? currentUser.name : 'Insp. Vikram Sharma (INV-204)';
-    const officerBadge = currentUser ? currentUser.badge_number : 'IND-EOW-8821';
-    const caseId = documentNode.case_id;
-    const sessionToken = sessionInfo ? sessionInfo.session_token : 'SESS-TEMP-88192';
-    const accessTime = new Date().toLocaleTimeString();
 
-    // Populate modal markup
     document.getElementById('viewer-doc-title').innerText = `${docId} — ${title}`;
     document.getElementById('viewer-doc-classification').innerText = documentNode.classification;
     document.getElementById('viewer-content-body').innerText = content;
 
-    // The original PDF is shown here — never as a download. The server re-checks
-    // supervisor clearance before streaming any bytes.
     this.loadOriginalFile(docId);
-
-    // Build dynamic watermark text
-    const watermarkHtml = `
-      CONFIDENTIAL &bull; RESTRICTED VIEW<br>
-      OFFICER: ${officerName} (${officerBadge})<br>
-      CASE: ${caseId} &bull; SESSION: ${sessionToken}<br>
-      ACCESSED: ${accessTime} &bull; PURPOSE: JUDICIAL INVESTIGATION REVIEW
-    `;
-    document.getElementById('viewer-watermark-overlay').innerHTML = watermarkHtml;
-
-    // Start 30-minute countdown timer
     this.startCountdown(30 * 60);
-
     modal.classList.add('active');
 
-    // Add copy/context menu prevention handlers
     const contentArea = document.getElementById('viewer-content-area');
     contentArea.oncopy = (e) => {
       e.preventDefault();
-      alert('SECURITY POLICY RESTRICTION: Copying sensitive document content is prohibited and audited.');
+      alert('SECURITY POLICY: Copying TraceX secure-preview content is prohibited and audited.');
       return false;
     };
     contentArea.oncontextmenu = (e) => {
@@ -84,8 +64,8 @@ window.SecureViewer = {
   },
 
   /**
-   * Render the original file inside the viewer iframe. If the server has no stored
-   * file, the extracted text already in the modal stays visible.
+   * Render the server-stamped preview. PDF toolbar is suppressed so the native
+   * Download/Print chrome is hidden; any saved copy is still the watermarked bytes.
    */
   loadOriginalFile(docId) {
     const frame = document.getElementById('viewer-file-frame');
@@ -100,7 +80,9 @@ window.SecureViewer = {
     }
     if (container) container.classList.remove('showing-file');
     if (textBody) textBody.style.display = '';
-    if (sourceLabel) sourceLabel.innerText = 'Loading original document…';
+    if (sourceLabel) {
+      sourceLabel.innerText = 'Loading TraceX session-watermarked preview…';
+    }
 
     if (!window.CustodyApp || typeof window.CustodyApp.fetchDocumentForPreview !== 'function') {
       if (sourceLabel) sourceLabel.innerText = 'Showing extracted text. Original file is not available.';
@@ -118,13 +100,18 @@ window.SecureViewer = {
 
         this.objectUrl = file.url;
         if (frame) {
-          frame.src = file.url;
+          // toolbar=0 / navpanes=0 hide Chrome's PDF chrome (download / print)
+          const isPdf = (file.mediaType || '').includes('pdf');
+          frame.src = isPdf ? `${file.url}#toolbar=0&navpanes=0&scrollbar=1` : file.url;
           frame.style.display = 'block';
         }
         if (textBody) textBody.style.display = 'none';
         if (container) container.classList.add('showing-file');
         if (sourceLabel) {
-          sourceLabel.innerText = 'Original document opened in a view-only session. Download is disabled.';
+          sourceLabel.innerText = (
+            'Server-side session watermark active — officer, case, and time are burned into ' +
+            'these bytes (hash-chain audited). DevTools cannot remove the mark.'
+          );
         }
       })
       .catch(err => {
@@ -137,12 +124,12 @@ window.SecureViewer = {
   startCountdown(secondsLeft) {
     if (this.timerInterval) clearInterval(this.timerInterval);
     const timerEl = document.getElementById('viewer-timer');
-    
+
     const updateTimer = () => {
       if (secondsLeft <= 0) {
         clearInterval(this.timerInterval);
         if (timerEl) timerEl.innerText = '00:00 (SESSION EXPIRED)';
-        alert('ACCESS SESSION EXPIRED: Your time-limited sensitive document session has elapsed.');
+        alert('ACCESS SESSION EXPIRED: Your time-limited TraceX secure-preview session has elapsed.');
         this.close();
         return;
       }

@@ -122,6 +122,15 @@ def create_auth_session(db: Session, user: UserDB) -> str:
     return token
 
 
+def _bearer_token(authorization: Optional[str]) -> Optional[str]:
+    header = (authorization or "").strip()
+    if not header:
+        return None
+    if header.lower().startswith("bearer "):
+        return header[7:].strip() or None
+    return header
+
+
 def get_current_user(
     authorization: Optional[str] = Header(None),
     db: Session = Depends(get_db)
@@ -1503,10 +1512,9 @@ def approve_access_request(
     return serialize_access_request(req)
 
 
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, Response
+from backend.watermark import stamp_file_for_preview
 
-
-# --- PROTECTED DOCUMENT DOWNLOAD ---
 
 @app.get("/api/documents/{doc_id}/access-check")
 def check_document_access(
@@ -1536,16 +1544,17 @@ INLINE_MEDIA_TYPES = {
 @app.get("/api/documents/{doc_id}/preview")
 def preview_document(
     doc_id: str,
+    authorization: Optional[str] = Header(None),
     user: UserDB = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     """
-    Stream the original file for viewing inside the controlled secure viewer.
+    Stream a *session-watermarked* copy of the document for the secure viewer.
 
-    There is no download route: this is the only way to reach document bytes, and it is
-    only reachable once evaluate_document_access() clears the officer behind the token.
-    The file is served inline so it renders in the viewer rather than saving to disk, and
-    every view is written to the audit trail.
+    The stored original on disk is never modified. The stamp (officer, badge, case,
+    session / grant id, timestamp) is burned into the PDF/image bytes before they
+    leave the server, so DevTools cannot strip a DOM overlay and a photographed or
+    downloaded preview remains attributable. Access is re-checked on every call.
     """
     doc = db.query(DocumentDB).filter(DocumentDB.document_id == doc_id).first()
     if not doc:
@@ -1567,7 +1576,6 @@ def preview_document(
         db.commit()
         raise HTTPException(status_code=403, detail=f"FORBIDDEN: {verdict['message']}")
 
-    # Resolve physical file path. file_path is stored relative, e.g. /documents/DOC-001.pdf
     file_name = os.path.basename(doc.file_path) if doc.file_path else f"{doc_id}.pdf"
     physical_path = os.path.join(DOCS_STORAGE_DIR, file_name)
 
@@ -1580,6 +1588,24 @@ def preview_document(
             )
         )
 
+    extension = os.path.splitext(physical_path)[1].lower()
+    try:
+        payload, media_type, stamped_name = stamp_file_for_preview(
+            physical_path=physical_path,
+            extension=extension,
+            user=user,
+            doc=doc,
+            verdict=verdict,
+            session_token=_bearer_token(authorization),
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=415, detail=str(exc)) from exc
+    except Exception as exc:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to apply TraceX session watermark: {exc}"
+        ) from exc
+
     record_audit(
         db,
         event_type="DOCUMENT_PREVIEWED",
@@ -1588,18 +1614,21 @@ def preview_document(
         case_id=doc.case_id,
         details=(
             f"{user.name} ({user.role}) opened {doc_id} ({doc.title}) in the controlled "
-            f"secure viewer. Authorised by: {verdict['reason']}."
+            f"secure viewer with server-side session watermark. "
+            f"Authorised by: {verdict['reason']}."
         )
     )
     db.commit()
 
-    extension = os.path.splitext(physical_path)[1].lower()
-    return FileResponse(
-        path=physical_path,
-        filename=file_name,
-        media_type=INLINE_MEDIA_TYPES.get(extension, "application/octet-stream"),
-        content_disposition_type="inline",
-        headers={"Cache-Control": "no-store"}
+    return Response(
+        content=payload,
+        media_type=media_type,
+        headers={
+            "Content-Disposition": f'inline; filename="{stamped_name}"',
+            "Cache-Control": "no-store, no-cache, must-revalidate",
+            "X-TraceX-Watermark": "session-bound",
+            "X-Content-Type-Options": "nosniff",
+        },
     )
 
 

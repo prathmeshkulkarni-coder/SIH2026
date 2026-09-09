@@ -64,7 +64,7 @@ Indian criminal-justice platforms already handle **registration, evidence captur
 | Type-coloured nodes + legend filters | Live | FIR / witness / forensic / charge sheet at a glance |
 | Bearer-token sessions (server-side) | Live | Client cannot assert another officer’s identity |
 | Supervisor access queue | Live | Clearance bound to **one** requester ID |
-| Secure preview (no download) | Live | Original PDF opens only after clearance |
+| Secure preview (no download) | Live | Session-stamped PDF only; original on disk untouched |
 | Court copy / PII redaction | Live | Public node linked with `redacted_from` |
 | Counterfactual impact simulation | Live | “What if this FIR failed?” — **writes nothing** |
 | Tamper + downstream review | Live | Integrity issue → blast radius of dependents |
@@ -127,8 +127,9 @@ sequenceDiagram
   alt Allowed
     UI->>API: GET /api/documents/{id}/preview
     API->>Access: Re-check (never trust the first answer alone)
-    API->>Store: Stream bytes (Content-Disposition: inline)
-    API-->>UI: PDF / text in locked viewer
+    API->>Store: Read original bytes (disk untouched)
+    Note over API: watermark.py burns one session stamp<br/>officer · clearance · session · date
+    API-->>UI: Stamped PDF inline (no DOM overlay)
   else Denied
     UI-->>Officer: Permission request modal
   end
@@ -178,9 +179,23 @@ If document **A** is compromised, TraceX walks **downstream** and marks dependen
 
 1. **Identity comes from the token**, never from `?user_role=` or a body field.
 2. **Clearance is per officer.** Approving Vikram for DOC-002 does **not** unlock DOC-002 for Malviya.
-3. **Preview is the only path to original bytes.** There is no download route.
+3. **Preview is the only path to original bytes.** There is no download route. Bytes that leave the server are **session-watermarked** (see below); the file on disk is never rewritten.
 4. **Every open / denial is audited.**
 5. **Official mutations append a ledger block** (upload, court copy).
+
+### Session watermark (secure preview)
+
+TraceX does **not** rely on a DOM overlay. On every allowed `GET /api/documents/{id}/preview`, `backend/watermark.py` burns **one** soft-red attribution stamp into the response PDF/image bytes before they leave the server.
+
+| Stamp line | Source (live request only) |
+|---|---|
+| Officer name + role | `UserDB` from the validated bearer session |
+| Badge · user id · department | `UserDB` |
+| Case / document · classification | `DocumentDB` |
+| Clearance reason · request id · expiry date | `evaluate_document_access()` verdict |
+| Session suffix · view **date** | Bearer token suffix + `YYYY-MM-DD` (no clock time) |
+
+**Why this matters for cybersecurity:** DevTools cannot strip an HTML watermark; a photographed or saved preview still names the viewing officer and clearance. The stored original under `dataset/documents/` stays clean for integrity / hash-chain checks. Response headers include `X-TraceX-Watermark: session-bound` and `Cache-Control: no-store`.
 
 ### Who can read what
 
@@ -219,7 +234,7 @@ block_hash = SHA-256( previous_hash + document_content_hash + block_number )
 | ORM | **SQLAlchemy** | Postgres in Docker, SQLite for local demos |
 | Frontend | **Vanilla JS + D3.js v7** | Zero-build SPA; provenance graph is first-class |
 | UI theme | Government of India light theme | Navy / saffron / India green — presentation-ready |
-| Crypto | **SHA-256**, session bearer tokens | Fingerprints + server-side sessions |
+| Crypto | **SHA-256**, session bearer tokens, PDF/image stamp | Fingerprints + server-side sessions + preview attribution |
 | Files | Local `dataset/documents/` | PDF / TXT with traversal-safe names |
 | Tests | **pytest** + FastAPI TestClient | Access-leak, preview, court copy, simulation |
 | Deploy | Docker Compose (app + Postgres 15) | One-command stack |
@@ -235,6 +250,7 @@ SIH2026/
 │   ├── database.py         # SQLAlchemy models + seed from CSV
 │   ├── provenance.py       # DAG engine: impact, explain, simulate
 │   ├── integrity.py        # SHA-256 + in-memory audit helper
+│   ├── watermark.py        # Session-bound PDF/image stamp for preview
 │   ├── models.py           # Pydantic / domain enums
 │   └── seed_data.py        # Rich demo case content
 ├── static/
@@ -243,7 +259,7 @@ SIH2026/
 │   └── js/
 │       ├── app.js          # Controllers, auth header, repository
 │       ├── graph.js        # Hierarchical provenance graph
-│       ├── viewer.js       # Controlled secure preview
+│       ├── viewer.js       # Secure preview (no DOM watermark)
 │       └── audit.js        # Court copy + impact simulation UI
 ├── dataset/
 │   ├── documents/          # Physical case files
@@ -333,7 +349,7 @@ Password for all seeded users: **`password123`**
 | `POST` | `/api/auth/logout` | End session; revoke that officer’s grants |
 | `GET` | `/api/cases/{id}/graph` | Nodes + links for the DAG |
 | `GET` | `/api/documents/{id}/access-check` | Server verdict for UI badges |
-| `GET` | `/api/documents/{id}/preview` | Inline original file (authz + audit) |
+| `GET` | `/api/documents/{id}/preview` | Session-watermarked PDF (authz + audit; original untouched) |
 | `POST` | `/api/access-requests` | Request clearance (requester = token) |
 | `POST` | `/api/access-requests/{id}/approve` | SP only |
 | `POST` | `/api/documents/upload` | New node + parents + ledger block |

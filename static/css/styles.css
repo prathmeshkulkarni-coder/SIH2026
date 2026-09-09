@@ -1238,7 +1238,7 @@ svg.provenance-svg {
   .redact-compare { grid-template-columns: 1fr; }
 }
 
-/* Secure Document Viewer Canvas & Watermark */
+/* Secure Document Viewer — watermark is burned into preview bytes by the server */
 .secure-viewer-container {
   position: relative;
   background: #ffffff;
@@ -1251,22 +1251,8 @@ svg.provenance-svg {
   user-select: none;
 }
 
-.watermark-overlay {
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  pointer-events: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transform: rotate(-28deg);
-  opacity: 0.12;
-  font-size: 24px;
-  font-weight: 900;
-  color: var(--status-critical);
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  text-align: center;
-  line-height: 1.7;
+.secure-viewer-container.showing-file {
+  padding: 12px;
 }
 
 .secure-notice-bar {
@@ -1306,15 +1292,6 @@ svg.provenance-svg {
   border: 1px solid var(--border-light);
   border-radius: var(--radius);
   background: #ffffff;
-}
-
-/* The watermark has to sit above the rendered file, not behind it */
-.secure-viewer-container.showing-file .watermark-overlay {
-  z-index: 3;
-}
-
-.secure-viewer-container.showing-file {
-  padding: 12px;
 }
 
 /* Responsive */

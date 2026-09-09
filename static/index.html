@@ -471,18 +471,16 @@
 
       <div class="modal-body">
         <div class="secure-notice-bar">
-          <span>🔒 CONTROLLED SECURE VIEW: Copy, Print, and Download disabled. Access session audited in NCRB Blockchain Ledger.</span>
+          <span>🔒 TRACEX SECURE PREVIEW: Session watermark burned into file bytes · Copy disabled · Hash-chain audited</span>
         </div>
 
         <div id="viewer-source-bar" class="viewer-source-bar">
-          <span id="viewer-source-label">Loading original document…</span>
+          <span id="viewer-source-label">Loading TraceX session-watermarked preview…</span>
         </div>
 
         <div id="viewer-content-area" class="secure-viewer-container">
-          <div id="viewer-watermark-overlay" class="watermark-overlay"></div>
-          <!-- Original file, rendered in place. Populated only after the server clears
-               this officer for the document. -->
-          <iframe id="viewer-file-frame" class="viewer-file-frame" title="Original document preview"></iframe>
+          <!-- Watermark is server-side (PDF/image bytes). No DOM overlay to strip. -->
+          <iframe id="viewer-file-frame" class="viewer-file-frame" title="TraceX watermarked document preview"></iframe>
           <div id="viewer-content-body" style="line-height: 1.7; font-size: 14px; position: relative; z-index: 2;"></div>
         </div>
       </div>
@@ -546,10 +544,10 @@
   </div>
 
   <!-- Scripts -->
-  <script src="/js/graph.js?v=cards-2"></script>
-  <script src="/js/viewer.js?v=cards-2"></script>
-  <script src="/js/audit.js?v=cards-2"></script>
-  <script src="/js/app.js?v=cards-2"></script>
+  <script src="/js/graph.js?v=wm-1"></script>
+  <script src="/js/viewer.js?v=wm-1"></script>
+  <script src="/js/audit.js?v=wm-1"></script>
+  <script src="/js/app.js?v=wm-1"></script>
 
 </body>
 </html>
