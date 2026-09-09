@@ -10,6 +10,7 @@
 </p>
 
 <p align="center">
+  <a href="https://tracex-ee5t.onrender.com/"><img src="https://img.shields.io/badge/Live%20Demo-Render-0f7b3f?style=for-the-badge" alt="Live Demo" /></a>
   <a href="#-quick-start"><img src="https://img.shields.io/badge/Quick%20Start-8%20minutes-0b3d76?style=for-the-badge" alt="Quick Start" /></a>
   <a href="#-architecture"><img src="https://img.shields.io/badge/Architecture-Provenance%20DAG-138808?style=for-the-badge" alt="Architecture" /></a>
   <a href="#-security--access-control"><img src="https://img.shields.io/badge/Security-RBAC%20%2B%20Hash%20Chain-b42318?style=for-the-badge" alt="Security" /></a>
@@ -321,7 +322,9 @@ Config is already in the repo: `render.yaml`, `scripts/render_start.sh`, `PYTHON
 1. Push latest `main` to GitHub (Render deploys from the remote).
 2. Open [https://dashboard.render.com](https://dashboard.render.com) → **New** → **Blueprint**.
 3. Connect `prathmeshkulkarni-coder/SIH2026` and apply the Blueprint.
-4. Wait for the first deploy. Open the service URL (e.g. `https://tracex-xxxx.onrender.com`).
+4. Wait for the first deploy. Open the service URL.
+
+**Live demo:** [https://tracex-ee5t.onrender.com/](https://tracex-ee5t.onrender.com/)
 
 **Free plan notes**
 
