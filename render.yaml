@@ -1,0 +1,29 @@
+# TraceX on Render — Blueprint
+# Dashboard: New → Blueprint → select this repo
+# Docs: https://render.com/docs/blueprint-spec
+
+services:
+  - type: web
+    name: tracex
+    runtime: python
+    plan: free
+    region: singapore
+    branch: main
+    autoDeploy: true
+    buildCommand: pip install -r requirements.txt
+    startCommand: bash scripts/render_start.sh
+    healthCheckPath: /
+    envVars:
+      - key: PYTHONPATH
+        value: .
+      - key: ENVIRONMENT
+        value: production
+      # Free-tier demo DB (ephemeral disk; re-seeds after wipe/redeploy).
+      # For a durable demo, replace this with a Neon/Supabase/Render Postgres URL
+      # (same value in both POSTGRES_URL and DATABASE_URL, or only POSTGRES_URL).
+      - key: POSTGRES_URL
+        value: sqlite:///./ncrb_dms.db
+      - key: DATABASE_URL
+        value: sqlite:///./ncrb_dms.db
+      - key: SECRET_KEY
+        generateValue: true

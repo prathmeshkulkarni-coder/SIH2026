@@ -268,6 +268,9 @@ SIH2026/
 ├── assets/                 # README diagrams & TraceX mark
 ├── docker-compose.yml
 ├── Dockerfile
+├── render.yaml             # Render Blueprint (public HTTPS demo)
+├── PYTHON_VERSION          # Render Python runtime
+├── scripts/render_start.sh # Render start: init_db + uvicorn
 └── requirements.txt
 ```
 
@@ -310,6 +313,32 @@ docker compose up --build
 
 - App: http://localhost:8000  
 - Postgres published on host port **5433**
+
+### Option C — Render (public HTTPS demo)
+
+Config is already in the repo: `render.yaml`, `scripts/render_start.sh`, `PYTHON_VERSION`.
+
+1. Push latest `main` to GitHub (Render deploys from the remote).
+2. Open [https://dashboard.render.com](https://dashboard.render.com) → **New** → **Blueprint**.
+3. Connect `prathmeshkulkarni-coder/SIH2026` and apply the Blueprint.
+4. Wait for the first deploy. Open the service URL (e.g. `https://tracex-xxxx.onrender.com`).
+
+**Free plan notes**
+
+- Uses **SQLite** on the instance disk (re-seeds after a wipe/redeploy). Fine for jury demos.
+- Free web services **spin down** after idle; the first request can take ~30–60s.
+- Demo logins stay the same (`vikram` / `password123`, etc.).
+
+**Durable Postgres (optional)** — create a free DB on [Neon](https://neon.tech) or [Supabase](https://supabase.com), then in the Render service → **Environment** set:
+
+```text
+POSTGRES_URL=<your postgres connection string>
+DATABASE_URL=<same string>
+```
+
+Redeploy. `init_db()` creates tables and seeds once when empty.
+
+**Manual (no Blueprint):** New → Web Service → this repo → Runtime **Python** → Build `pip install -r requirements.txt` → Start `bash scripts/render_start.sh` → add the same env vars as in `render.yaml`.
 
 ---
 
