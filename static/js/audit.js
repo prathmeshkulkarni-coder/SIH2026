@@ -49,7 +49,7 @@ window.CustodyAudit = {
 
         modal.classList.add('active');
       })
-      .catch(err => alert(err.message));
+      .catch(err => uiAlert(err.message));
   },
 
   scrubPersonalDetails(text) {
@@ -91,7 +91,7 @@ window.CustodyAudit = {
           modal.classList.add('active');
         });
       })
-      .catch(err => alert(err.message));
+      .catch(err => uiAlert(err.message));
 
     document.getElementById('btn-auto-scrub').onclick = () => {
       courtBox.value = this.scrubPersonalDetails(originalBox.value);
@@ -111,7 +111,7 @@ window.CustodyAudit = {
         .then(res => {
           modal.classList.remove('active');
           const newId = res.new_document.document_id;
-          alert(
+          uiAlert(
             `COURT COPY READY\n\n` +
             `Public copy: ${newId}\n` +
             `Source (unchanged): ${res.source_document_id}\n\n` +
@@ -123,7 +123,7 @@ window.CustodyAudit = {
             window.CustodyApp.switchToGraphView();
           });
         })
-        .catch(err => alert(`COURT COPY NOT CREATED\n\n${err.message}`))
+        .catch(err => uiAlert(`COURT COPY NOT CREATED\n\n${err.message}`))
         .finally(() => {
           submitBtn.disabled = false;
           submitBtn.innerHTML = originalLabel;
@@ -183,7 +183,7 @@ window.CustodyAudit = {
           window.CustodyGraph.highlightLineage(docId);
         }
       })
-      .catch(err => alert(`SIMULATION FAILED\n\n${err.message}`));
+      .catch(err => uiAlert(`SIMULATION FAILED\n\n${err.message}`));
   },
 
   showReportModal(docId) {

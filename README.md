@@ -384,6 +384,7 @@ Password for all seeded users: **`password123`**
 | `GET` | `/api/documents/{id}/preview` | Session-watermarked PDF (authz + audit; original untouched) |
 | `POST` | `/api/access-requests` | Request clearance (requester = token) |
 | `POST` | `/api/access-requests/{id}/approve` | SP only |
+| `POST` | `/api/access-requests/{id}/reject` | SP only; body must include `rejection_reason` |
 | `POST` | `/api/documents/upload` | New node + parents + ledger block |
 | `POST` | `/api/documents/{id}/redact` | Public court copy |
 | `POST` | `/api/simulation/impact` | Non-destructive blast-radius preview |

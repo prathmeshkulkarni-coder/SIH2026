@@ -278,7 +278,7 @@
     <section id="view-queue" class="view-panel" style="display: none;">
       <div style="margin-bottom: 16px;">
         <h3 style="font-size: 16px; font-weight: 700;">Supervisor Access Grant Approval Queue</h3>
-        <p style="font-size: 12px; color: var(--text-secondary);">Review and approve sensitive document access requests submitted by officers.</p>
+        <p style="font-size: 12px; color: var(--text-secondary);">Review, approve, or reject sensitive document access requests submitted by officers.</p>
       </div>
       <div id="access-queue-container"></div>
     </section>
@@ -543,11 +543,50 @@
     </div>
   </div>
 
+  <!-- Generic in-app alert (replaces browser alert) -->
+  <div id="app-dialog-modal" class="modal-overlay">
+    <div class="modal-card" style="width: 480px;">
+      <div id="app-dialog-header" class="modal-header">
+        <div id="app-dialog-title" style="font-weight: 800; font-size: 16px;">TraceX</div>
+        <button type="button" onclick="window.TraceXDialog && window.TraceXDialog._close()" style="background:none; border:none; color:white; font-size:22px; cursor:pointer;">&times;</button>
+      </div>
+      <div class="modal-body" style="gap:16px;">
+        <div id="app-dialog-message" class="app-dialog-message"></div>
+        <div style="display:flex; gap:10px; justify-content:flex-end;">
+          <button type="button" id="app-dialog-cancel" class="btn-secondary" style="display:none;">Cancel</button>
+          <button type="button" id="app-dialog-confirm" class="btn-primary">OK</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Supervisor reject access request -->
+  <div id="reject-access-modal" class="modal-overlay">
+    <div class="modal-card" style="width: 520px;">
+      <div class="modal-header critical">
+        <div style="font-weight: 800; font-size: 16px;">Reject Access Request</div>
+        <button type="button" onclick="document.getElementById('reject-access-modal').classList.remove('active')" style="background:none; border:none; color:white; font-size:22px; cursor:pointer;">&times;</button>
+      </div>
+      <div class="modal-body" style="gap:14px;">
+        <div id="reject-access-summary" style="font-size:13px; color:var(--text-secondary); line-height:1.5;"></div>
+        <div>
+          <label style="font-size:11px; color:var(--text-secondary); font-weight:700;">REASON FOR REJECTION (required)</label>
+          <textarea id="reject-reason-input" rows="4" placeholder="Explain why this clearance is refused…" style="width:100%; margin-top:4px;"></textarea>
+        </div>
+        <div style="display:flex; gap:10px; justify-content:flex-end;">
+          <button type="button" class="btn-secondary" onclick="document.getElementById('reject-access-modal').classList.remove('active')">Cancel</button>
+          <button type="button" id="btn-confirm-reject-access" class="btn-danger">Reject Request</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Scripts -->
-  <script src="/js/graph.js?v=wm-1"></script>
-  <script src="/js/viewer.js?v=wm-1"></script>
-  <script src="/js/audit.js?v=wm-1"></script>
-  <script src="/js/app.js?v=wm-1"></script>
+  <script src="/js/dialog.js?v=ui-1"></script>
+  <script src="/js/graph.js?v=ui-1"></script>
+  <script src="/js/viewer.js?v=ui-1"></script>
+  <script src="/js/audit.js?v=ui-1"></script>
+  <script src="/js/app.js?v=ui-1"></script>
 
 </body>
 </html>

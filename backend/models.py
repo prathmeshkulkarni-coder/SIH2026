@@ -134,6 +134,7 @@ class AccessRequest(BaseModel):
     approved_at: Optional[str] = None
     session_token: Optional[str] = None
     expires_at: Optional[str] = None
+    rejection_reason: Optional[str] = None
 
 class AuditEvent(BaseModel):
     event_id: str

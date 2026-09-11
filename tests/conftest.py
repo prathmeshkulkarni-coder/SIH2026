@@ -100,13 +100,15 @@ class Factory:
         ))
 
     def access_request(self, request_id, doc_id, requester_id, status="PENDING",
-                       token=None, expires_at=None, approver_id=None, approved_at=None):
+                       token=None, expires_at=None, approver_id=None, approved_at=None,
+                       rejection_reason=None):
         return self._add(AccessRequestDB(
             request_id=request_id, document_id=doc_id, requester_id=requester_id,
             requester_name=f"Officer {requester_id}", requester_role="Investigator",
             requested_action="VIEW", purpose_reason="Case review", status=status,
             approver_id=approver_id, session_token=token, requested_at=now_str(),
             approved_at=approved_at, expires_at=expires_at,
+            rejection_reason=rejection_reason,
         ))
 
     def block(self, number, previous_hash, block_hash, doc_id="DOC-001", action="TEST"):

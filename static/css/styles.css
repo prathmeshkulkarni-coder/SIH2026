@@ -1159,6 +1159,28 @@ svg.provenance-svg {
   box-shadow: 0 0 0 3px rgba(11, 61, 118, 0.15);
 }
 
+.app-dialog-message {
+  font-size: 14px;
+  color: var(--text-primary);
+  line-height: 1.55;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.queue-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: stretch;
+  min-width: 200px;
+}
+
+.queue-actions .btn-primary,
+.queue-actions .btn-danger {
+  justify-content: center;
+  width: 100%;
+}
+
 /* Provenance placement block on the upload form */
 .provenance-fieldset {
   background: var(--bg-subtle);

@@ -208,7 +208,8 @@ def serialize_access_request(req: AccessRequestDB) -> Dict[str, Any]:
         "session_token": req.session_token,
         "requested_at": req.requested_at,
         "approved_at": req.approved_at,
-        "expires_at": req.expires_at
+        "expires_at": req.expires_at,
+        "rejection_reason": getattr(req, "rejection_reason", None),
     }
 
 
@@ -272,6 +273,28 @@ def evaluate_document_access(db: Session, doc: DocumentDB, user: UserDB) -> Dict
                 "message": (
                     f"Request {pending.request_id} is awaiting {ROLE_SUPERVISOR} approval."
                 )
+            })
+            return verdict
+
+        rejected = (
+            db.query(AccessRequestDB)
+            .filter(
+                AccessRequestDB.document_id == doc.document_id,
+                AccessRequestDB.requester_id == user.user_id,
+                AccessRequestDB.status == "REJECTED",
+            )
+            .order_by(AccessRequestDB.requested_at.desc())
+            .first()
+        )
+        if rejected:
+            reason_text = (rejected.rejection_reason or "").strip() or "No reason recorded."
+            verdict.update({
+                "reason": "ACCESS_REJECTED",
+                "request_id": rejected.request_id,
+                "message": (
+                    f"Request {rejected.request_id} was rejected by the {ROLE_SUPERVISOR}. "
+                    f"Reason: {reason_text}"
+                ),
             })
         else:
             verdict["message"] = (
@@ -1484,16 +1507,17 @@ def approve_access_request(
     if not req:
         raise HTTPException(status_code=404, detail=f"Access request '{req_id}' not found.")
 
-    if req.status == "APPROVED":
+    if req.status != "PENDING":
         raise HTTPException(
             status_code=409,
-            detail=f"Request {req_id} has already been approved."
+            detail=f"Request {req_id} cannot be approved because it is already {req.status}."
         )
 
     granted_at = datetime.now()
     req.status = "APPROVED"
     req.approver_id = approver.user_id
     req.approved_at = granted_at.strftime(TIMESTAMP_FMT)
+    req.rejection_reason = None
     req.session_token = f"TOK-SECURE-{uuid.uuid4().hex[:12].upper()}"
     req.expires_at = (granted_at + timedelta(hours=GRANT_TTL_HOURS)).strftime(TIMESTAMP_FMT)
 
@@ -1506,6 +1530,57 @@ def approve_access_request(
             f"{approver.name} approved {req_id}, granting {req.requester_name} "
             f"({req.requester_id}) access to {req.document_id} until {req.expires_at}. "
             "This clearance applies to that officer only."
+        )
+    )
+    db.commit()
+    return serialize_access_request(req)
+
+
+@app.post("/api/access-requests/{req_id}/reject")
+def reject_access_request(
+    req_id: str,
+    body: Optional[Dict[str, Any]] = Body(None),
+    approver: UserDB = Depends(require_supervisor),
+    db: Session = Depends(get_db)
+):
+    """
+    Reject a pending clearance. Supervisor only. A written reason is required so the
+    requester (and audit trail) know why access was refused.
+    """
+    req = db.query(AccessRequestDB).filter(AccessRequestDB.request_id == req_id).first()
+    if not req:
+        raise HTTPException(status_code=404, detail=f"Access request '{req_id}' not found.")
+
+    if req.status != "PENDING":
+        raise HTTPException(
+            status_code=409,
+            detail=f"Request {req_id} cannot be rejected because it is already {req.status}."
+        )
+
+    payload = body or {}
+    reason = (payload.get("rejection_reason") or "").strip()
+    if not reason:
+        raise HTTPException(
+            status_code=400,
+            detail="A rejection reason is required."
+        )
+
+    decided_at = datetime.now().strftime(TIMESTAMP_FMT)
+    req.status = "REJECTED"
+    req.approver_id = approver.user_id
+    req.approved_at = decided_at
+    req.rejection_reason = reason
+    req.session_token = None
+    req.expires_at = None
+
+    record_audit(
+        db,
+        event_type="ACCESS_REJECTED",
+        actor=approver,
+        document_id=req.document_id,
+        details=(
+            f"{approver.name} rejected {req_id} for {req.requester_name} "
+            f"({req.requester_id}) on {req.document_id}. Reason: {reason}"
         )
     )
     db.commit()

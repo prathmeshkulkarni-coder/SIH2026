@@ -11,7 +11,7 @@ import json
 import hashlib
 from datetime import datetime
 from dotenv import load_dotenv
-from sqlalchemy import create_engine, Column, String, Integer, Text, ForeignKey, DateTime
+from sqlalchemy import create_engine, Column, String, Integer, Text, ForeignKey, DateTime, text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
@@ -119,6 +119,7 @@ class AccessRequestDB(Base):
     requested_at = Column(String(50), nullable=False)
     approved_at = Column(String(50), nullable=True)
     expires_at = Column(String(50), nullable=True)
+    rejection_reason = Column(Text, nullable=True)
 
 
 class AuthSessionDB(Base):
@@ -180,8 +181,27 @@ class PoliceAssetDB(Base):
     custodian_id = Column(String(50), nullable=False)
 
 
+def ensure_schema_patches():
+    """Add columns introduced after first create_all (SQLite/Postgres safe)."""
+    with engine.begin() as conn:
+        dialect = engine.dialect.name
+        if dialect == "sqlite":
+            cols = {
+                row[1]
+                for row in conn.execute(text("PRAGMA table_info(access_requests)")).fetchall()
+            }
+            if cols and "rejection_reason" not in cols:
+                conn.execute(text("ALTER TABLE access_requests ADD COLUMN rejection_reason TEXT"))
+        elif dialect.startswith("postgres"):
+            conn.execute(text(
+                "ALTER TABLE access_requests "
+                "ADD COLUMN IF NOT EXISTS rejection_reason TEXT"
+            ))
+
+
 def init_db():
     Base.metadata.create_all(bind=engine)
+    ensure_schema_patches()
     seed_db_from_csv()
 
 def seed_db_from_csv():

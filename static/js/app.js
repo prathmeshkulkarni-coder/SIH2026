@@ -129,7 +129,7 @@ window.CustodyApp = {
         
         // Strict RBAC Tab Guard: Only Supervisor can access Queue tab!
         if (viewId === 'view-queue' && (!this.currentUser || this.currentUser.role !== 'Supervisor')) {
-          alert('ACCESS DENIED: The Supervisor Queue is strictly restricted to Superintendent of Police (Supervisor) personnel.');
+          uiAlert('ACCESS DENIED: The Supervisor Queue is strictly restricted to Superintendent of Police (Supervisor) personnel.');
           return;
         }
 
@@ -220,7 +220,7 @@ window.CustodyApp = {
     };
 
     document.getElementById('btn-demo-tamper').onclick = () => {
-      if (!this.currentDocNode) { alert('Select a document node first.'); return; }
+      if (!this.currentDocNode) { uiAlert('Select a document node first.'); return; }
       this.triggerTamperDemo(this.currentDocNode.document_id);
     };
 
@@ -256,6 +256,11 @@ window.CustodyApp = {
       this.submitAccessRequest(docId, reason);
     };
 
+    const rejectConfirm = document.getElementById('btn-confirm-reject-access');
+    if (rejectConfirm) {
+      rejectConfirm.onclick = () => this.rejectAccessRequest();
+    }
+
     document.getElementById('btn-pii-redact').onclick = () => {
       if (!this.currentDocNode) return;
       window.CustodyAudit.showRedactModal(this.currentDocNode);
@@ -287,7 +292,7 @@ window.CustodyApp = {
     const p = document.getElementById('login-password').value.trim();
 
     if (!u || !p) {
-      alert('Username and password are required.');
+      uiAlert('Username and password are required.');
       return;
     }
 
@@ -310,7 +315,7 @@ window.CustodyApp = {
       this.loadCases();
     })
     .catch(err => {
-      alert('Authentication Failed: Invalid username or password. Try demo accounts!');
+      uiAlert('Authentication Failed: Invalid username or password. Try demo accounts!');
     });
   },
 
@@ -518,7 +523,7 @@ window.CustodyApp = {
           badge_number: this.currentUser ? this.currentUser.badge_number : 'IND-NCRB'
         });
       })
-      .catch(err => alert(err.message));
+      .catch(err => uiAlert(err.message));
   },
 
   /** `verdict` is the server's access-check result, used to explain exactly why access failed. */
@@ -537,6 +542,7 @@ window.CustodyApp = {
     const headline = {
       PENDING_APPROVAL: ['var(--status-warning)', 'PENDING SUPERVISOR APPROVAL'],
       GRANT_EXPIRED: ['var(--status-warning)', 'CLEARANCE EXPIRED'],
+      ACCESS_REJECTED: ['var(--status-critical)', 'ACCESS REQUEST REJECTED'],
       NO_CLEARANCE: ['var(--status-critical)', `NO SUPERVISOR CLEARANCE FOR ${officer.toUpperCase()}`]
     }[reason] || ['var(--status-critical)', `ACCESS DENIED FOR ${officer.toUpperCase()}`];
 
@@ -571,7 +577,7 @@ window.CustodyApp = {
     })
       .then(req => {
         document.getElementById('permission-modal').classList.remove('active');
-        alert(
+        uiAlert(
           `ACCESS REQUEST SUBMITTED\n\n` +
           `Request ID: ${req.request_id}\nDocument: ${docId}\n` +
           `Officer: ${req.requester_name} (${req.requester_id})\n` +
@@ -581,7 +587,7 @@ window.CustodyApp = {
         );
         this.reloadCurrentCase();
       })
-      .catch(err => alert(`REQUEST NOT SUBMITTED\n\n${err.message}`));
+      .catch(err => uiAlert(`REQUEST NOT SUBMITTED\n\n${err.message}`));
   },
 
   loadAccessQueue(renderView = true) {
@@ -607,23 +613,42 @@ window.CustodyApp = {
             return;
           }
 
-          container.innerHTML = requests.map(req => `
-            <div style="background: var(--bg-card); border:1px solid var(--border-light); border-left:3px solid var(--saffron); border-radius:var(--radius); padding:16px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center; box-shadow: var(--shadow-sm);">
+          container.innerHTML = requests.map(req => {
+            const statusColor = req.status === 'APPROVED'
+              ? 'var(--status-verified)'
+              : req.status === 'REJECTED'
+                ? 'var(--status-critical)'
+                : 'var(--status-warning)';
+            const statusBadge = req.status === 'APPROVED'
+              ? '<span class="badge-pill verified">APPROVED BY SUPERVISOR</span>'
+              : req.status === 'REJECTED'
+                ? `<span class="badge-pill critical">REJECTED</span>`
+                : '';
+            const rejectNote = req.status === 'REJECTED' && req.rejection_reason
+              ? `<div style="font-size:11px; color:var(--status-critical); margin-top:4px;">Reason: ${req.rejection_reason}</div>`
+              : '';
+            const actions = req.status === 'PENDING' ? `
+              <div class="queue-actions">
+                <button class="btn-primary" onclick="window.CustodyApp.approveAccessRequest('${req.request_id}')">
+                  <span>✓</span> Approve for ${req.requester_name.split(' ')[0]}
+                </button>
+                <button class="btn-danger" onclick="window.CustodyApp.openRejectAccessModal('${req.request_id}')">
+                  <span>✕</span> Reject
+                </button>
+              </div>
+            ` : statusBadge;
+            return `
+            <div style="background: var(--bg-card); border:1px solid var(--border-light); border-left:3px solid var(--saffron); border-radius:var(--radius); padding:16px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center; gap:16px; box-shadow: var(--shadow-sm);">
               <div>
                 <div style="font-weight:800; color:var(--accent-blue); font-size:14px;">${req.request_id} &bull; Document ${req.document_id}</div>
                 <div style="font-size:13px; color:var(--text-primary); margin-top:2px;">Requester: <strong>${req.requester_name}</strong> (${req.requester_role} &bull; ID: ${req.requester_id})</div>
                 <div style="font-size:12px; color:var(--text-secondary); margin-top:2px;">Purpose: ${req.purpose_reason} | Action: ${req.requested_action}</div>
-                <div style="font-size:11px; margin-top:4px;">Status: <strong style="color:${req.status === 'APPROVED' ? 'var(--status-verified)' : 'var(--status-warning)'}">${req.status}</strong> ${req.session_token ? '| Token: ' + req.session_token : ''}</div>
+                <div style="font-size:11px; margin-top:4px;">Status: <strong style="color:${statusColor}">${req.status}</strong> ${req.session_token ? '| Token: ' + req.session_token : ''}</div>
+                ${rejectNote}
               </div>
-              <div>
-                ${req.status === 'PENDING' ? `
-                  <button class="btn-primary" onclick="window.CustodyApp.approveAccessRequest('${req.request_id}')">
-                    <span>✓</span> Approve & Grant Access Token for ${req.requester_name.split(' ')[0]}
-                  </button>
-                ` : `<span class="badge-pill verified">APPROVED BY SUPERVISOR</span>`}
-              </div>
-            </div>
-          `).join('');
+              <div>${actions}</div>
+            </div>`;
+          }).join('');
         }
       });
   },
@@ -632,18 +657,69 @@ window.CustodyApp = {
     // The approver is the signed-in user; the server rejects anyone who is not the SP
     this.apiJson(`/api/access-requests/${reqId}/approve`, { method: 'POST' })
       .then(req => {
-        alert(
-          `SUPERVISOR APPROVED\n\n` +
+        uiAlert(
           `Request: ${req.request_id}\n` +
           `Requester: ${req.requester_name} (${req.requester_id})\n` +
           `Session Token: ${req.session_token}\n` +
           `Valid Until: ${req.expires_at}\n\n` +
-          `Document ${req.document_id} is now unlocked for ${req.requester_name} only.`
+          `Document ${req.document_id} is now unlocked for ${req.requester_name} only.`,
+          'Supervisor Approved',
+          'success'
         );
         this.loadAccessQueue(true);
         this.reloadCurrentCase();
       })
-      .catch(err => alert(`APPROVAL FAILED\n\n${err.message}`));
+      .catch(err => uiAlert(err.message, 'Approval Failed', 'error'));
+  },
+
+  openRejectAccessModal(reqId) {
+    const req = (this.accessRequests || []).find(r => r.request_id === reqId);
+    if (!req) {
+      uiAlert(`Access request ${reqId} was not found in the queue.`, 'Reject Failed', 'error');
+      return;
+    }
+    this._rejectRequestId = reqId;
+    const summary = document.getElementById('reject-access-summary');
+    if (summary) {
+      summary.innerHTML =
+        `<strong>${req.request_id}</strong> · Document <strong>${req.document_id}</strong><br>` +
+        `Requester: <strong>${req.requester_name}</strong> (${req.requester_id})<br>` +
+        `Purpose: ${req.purpose_reason}`;
+    }
+    const input = document.getElementById('reject-reason-input');
+    if (input) input.value = '';
+    document.getElementById('reject-access-modal').classList.add('active');
+  },
+
+  rejectAccessRequest() {
+    const reqId = this._rejectRequestId;
+    const reason = (document.getElementById('reject-reason-input')?.value || '').trim();
+    if (!reqId) {
+      uiAlert('No access request selected.', 'Reject Failed', 'error');
+      return;
+    }
+    if (!reason) {
+      uiAlert('Please enter a reason for rejection.', 'Reason Required', 'warning');
+      return;
+    }
+
+    this.apiJson(`/api/access-requests/${reqId}/reject`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ rejection_reason: reason }),
+    })
+      .then(req => {
+        document.getElementById('reject-access-modal').classList.remove('active');
+        this._rejectRequestId = null;
+        uiAlert(
+          `Request ${req.request_id} rejected for ${req.requester_name}.\n\nReason: ${req.rejection_reason}`,
+          'Access Rejected',
+          'error'
+        );
+        this.loadAccessQueue(true);
+        this.reloadCurrentCase();
+      })
+      .catch(err => uiAlert(err.message, 'Rejection Failed', 'error'));
   },
 
   renderGraphView() {
@@ -762,7 +838,7 @@ window.CustodyApp = {
     const parentIds = this.selectedParentIds();
 
     if (!title && (!fileInput.files || fileInput.files.length === 0)) {
-      alert('Please enter a Document Title or select a physical file to upload.');
+      uiAlert('Please enter a Document Title or select a physical file to upload.');
       return;
     }
 
@@ -802,7 +878,7 @@ window.CustodyApp = {
           ? `Linked as ${res.relationship_type} of ${res.parent_document_ids.join(', ')}.`
           : 'Added as a new root node.';
 
-        alert(
+        uiAlert(
           `DOCUMENT ${res.document_id} COMMITTED\n\n` +
           `${res.document_type} — ${res.title}\n` +
           `Classification: ${res.classification}\n` +
@@ -821,7 +897,7 @@ window.CustodyApp = {
         });
       })
       .catch(err => {
-        alert(`UPLOAD FAILED\n\n${err.message}`);
+        uiAlert(`UPLOAD FAILED\n\n${err.message}`);
       })
       .finally(() => {
         submitBtn.disabled = false;
@@ -908,7 +984,7 @@ window.CustodyApp = {
     this.api(`/api/documents/${docId}/trigger-tamper`, { method: 'POST' })
       .then(r => r.json())
       .then(res => {
-        alert(`PRIMARY DEMO TRIGGER EXECUTED: Integrity failure simulated for ${docId}! Cryptographic hash mismatch detected. Downstream nodes updated to REVIEW_REQUIRED.`);
+        uiAlert(`PRIMARY DEMO TRIGGER EXECUTED: Integrity failure simulated for ${docId}! Cryptographic hash mismatch detected. Downstream nodes updated to REVIEW_REQUIRED.`);
         this.reloadCurrentCase();
       });
   },
@@ -917,7 +993,7 @@ window.CustodyApp = {
     this.api(`/api/documents/${docId}/reset-tamper`, { method: 'POST' })
       .then(r => r.json())
       .then(res => {
-        alert(`Document ${docId} restored to pristine state. Integrity status verified.`);
+        uiAlert(`Document ${docId} restored to pristine state. Integrity status verified.`);
         this.reloadCurrentCase();
       });
   },
@@ -948,9 +1024,9 @@ window.CustodyApp = {
       .then(r => r.json())
       .then(res => {
         if (res.status === 'VERIFIED') {
-          alert(`VERIFIED: Content SHA-256 hash matches recorded reference:\n${res.calculated_hash}`);
+          uiAlert(`VERIFIED: Content SHA-256 hash matches recorded reference:\n${res.calculated_hash}`);
         } else {
-          alert(`INTEGRITY MISMATCH DETECTED for ${docId}!\nCalculated: ${res.calculated_hash}\nRecorded: ${res.recorded_hash}`);
+          uiAlert(`INTEGRITY MISMATCH DETECTED for ${docId}!\nCalculated: ${res.calculated_hash}\nRecorded: ${res.recorded_hash}`);
         }
         this.reloadCurrentCase();
       });

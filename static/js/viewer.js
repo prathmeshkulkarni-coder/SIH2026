@@ -30,7 +30,7 @@ window.SecureViewer = {
     const contentArea = document.getElementById('viewer-content-area');
     contentArea.oncopy = (e) => {
       e.preventDefault();
-      alert('SECURITY POLICY: Copying TraceX secure-preview content is prohibited and audited.');
+      uiAlert('SECURITY POLICY: Copying TraceX secure-preview content is prohibited and audited.');
       return false;
     };
     contentArea.oncontextmenu = (e) => {
@@ -129,7 +129,7 @@ window.SecureViewer = {
       if (secondsLeft <= 0) {
         clearInterval(this.timerInterval);
         if (timerEl) timerEl.innerText = '00:00 (SESSION EXPIRED)';
-        alert('ACCESS SESSION EXPIRED: Your time-limited TraceX secure-preview session has elapsed.');
+        uiAlert('ACCESS SESSION EXPIRED: Your time-limited TraceX secure-preview session has elapsed.');
         this.close();
         return;
       }
